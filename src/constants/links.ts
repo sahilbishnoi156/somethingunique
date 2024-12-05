@@ -25,12 +25,12 @@ export const BOTTOM_NAV_LINKS: BottomNavigationLink[] = [
     },
     {
         name: 'Profile',
-        href: '/app/profile',
+        href: '/profile',
         icon: UserRound,
     },
     {
         name: 'Settings',
-        href: '/app/settings',
+        href: '/settings',
         icon: Settings,
     },
 ];

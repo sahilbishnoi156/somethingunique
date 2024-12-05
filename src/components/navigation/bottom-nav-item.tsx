@@ -19,8 +19,8 @@ export const BottomNavigationItem: React.FC<
             <Tooltip>
                 <TooltipTrigger asChild>
                     <Button
-                        variant="outline"
-                        className="h-12 w-12 rounded-xl "
+                        variant="secondary"
+                        className="h-12 w-12 rounded-xl"
                     >
                         <item.icon />
                     </Button>

@@ -1,7 +1,6 @@
 'use client';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 export default function Page() {
-    const router = useRouter();
-    return router.push('/app/feed?type=forum');
+    redirect('/app/feed?type=forum');
 }
