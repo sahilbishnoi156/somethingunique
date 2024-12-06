@@ -12,6 +12,7 @@ import {
     InputOTPSlot,
 } from '@/components/ui/input-otp';
 import Link from 'next/link';
+import Loader from '../loader';
 
 type StudentEmailVerificationProps = {
     email: string;
@@ -29,8 +30,10 @@ export default function StudentEmailVerification({
     const [otpSent, setOtpSent] = useState(false);
     const [otp, setOtp] = useState<string>('');
     const router = useRouter();
+    const [isProcessing, setIsProcessing] = useState(false);
 
     const handleSendOtp = () => {
+        setIsProcessing(true);
         const promise = () =>
             new Promise(async (resolve, reject) => {
                 // Make the API call
@@ -42,7 +45,6 @@ export default function StudentEmailVerification({
                             `&type=${type}`
                     );
                     const data = await response.json();
-                    console.log('API data:', data);
                     if (!response.ok) {
                         throw new Error(data?.data || data?.message);
                     }
@@ -51,6 +53,8 @@ export default function StudentEmailVerification({
                 } catch (error) {
                     console.error('API error:', error);
                     reject(error);
+                } finally {
+                    setIsProcessing(false);
                 }
             });
 
@@ -62,6 +66,7 @@ export default function StudentEmailVerification({
     };
 
     const handleVerifyOtp = () => {
+        setIsProcessing(true);
         const promise = () =>
             new Promise(async (resolve, reject) => {
                 // Make the API call
@@ -94,6 +99,8 @@ export default function StudentEmailVerification({
                 } catch (error) {
                     console.error('API error:', error);
                     reject(error);
+                } finally {
+                    setIsProcessing(false);
                 }
             });
 
@@ -106,6 +113,11 @@ export default function StudentEmailVerification({
 
     return (
         <div className="w-1/2 mx-auto mt-10">
+            {isProcessing && (
+                <div className="w-screen h-screen bg-background fixed inset-0 flex items-center justify-center">
+                    <Loader />
+                </div>
+            )}
             {otpSent ? (
                 <>
                     <h2 className="text-3xl font-bold text-center mb-1">
@@ -234,13 +246,13 @@ export default function StudentEmailVerification({
 
             {type === 'login' ? (
                 <p className="text-center text-gray-400 mt-6">
-                    Already have an account?{' '}
+                    Noting up your sleeves brat? Start from{' '}
                     <Link
-                        href="/login"
+                        href="/register"
                         className="text-blue-400 hover:underline"
                     >
-                        Why are you here then?
-                    </Link>
+                        here
+                    </Link>{' '}
                 </p>
             ) : (
                 <p className="text-center text-gray-400 mt-6">
@@ -249,8 +261,9 @@ export default function StudentEmailVerification({
                         href="/login"
                         className="text-blue-400 hover:underline"
                     >
-                        Log in to unlock the mysteries.
+                        Log in{' '}
                     </Link>
+                    before <br /> we replace you with a doppelgänger.
                 </p>
             )}
         </div>

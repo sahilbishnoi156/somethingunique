@@ -7,10 +7,17 @@ import { toast } from 'sonner';
 import { UniversityType } from '@/types/universities.types';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { customFetch } from '@/lib/custom-fetch';
+import { getRandomElement } from '@/lib/random-item';
+import {
+    USERNAME_AVAILABLE_MSG,
+    USERNAME_NOT_AVAILABLE_MSG,
+} from '@/constants/sentences';
 
 type CreateUsernameProps = {
     university: UniversityType;
     email: string;
+    setIsProcessing: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type UsernameStatus =
@@ -23,6 +30,7 @@ const BASE_API_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
 export default function CreateUsername({
     university,
     email,
+    setIsProcessing,
 }: CreateUsernameProps) {
     const [username, setUsername] = useState('');
     const [status, setStatus] = useState<UsernameStatus>('idle');
@@ -70,21 +78,18 @@ export default function CreateUsername({
     const handleCreateUser = async () => {
         if (!username || status !== 'available') return;
         try {
-            const response = await fetch(
-                BASE_API_URL + '/auth/create-user',
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        email: email,
-                        username,
-                        college_id: university._id,
-                        avatar:
-                            BASE_API_URL?.replace(/\/api\/?$/, '') +
-                            '/static/images/default-avatar.png',
-                    }),
-                }
-            );
+            setIsProcessing(true);
+            const response = await customFetch('/auth/create-user', {
+                method: 'POST',
+                body: JSON.stringify({
+                    email: email,
+                    username,
+                    college_id: university._id,
+                    avatar:
+                        BASE_API_URL?.replace(/\/api\/?$/, '') +
+                        '/static/images/default-avatar.png',
+                }),
+            });
             const data = await response.json();
 
             if (!response.ok) {
@@ -101,6 +106,8 @@ export default function CreateUsername({
             router.push('/app');
         } catch {
             toast.error('Yikes! A wild error appeared. Try again!');
+        } finally {
+            setIsProcessing(false);
         }
     };
 
@@ -126,9 +133,8 @@ export default function CreateUsername({
     const statusMessages = {
         idle: 'Waiting for your creative genius...',
         searching: 'Hunting for your digital identity...',
-        available: 'Jackpot! This username is all yours!',
-        'not-available':
-            "Bummer! This name's taken. Time for Plan B!",
+        available: getRandomElement(USERNAME_AVAILABLE_MSG),
+        'not-available': getRandomElement(USERNAME_NOT_AVAILABLE_MSG),
     };
 
     return (

@@ -10,27 +10,30 @@ import {
 } from '@/components/ui/select';
 import { UniversityType } from '@/types/universities.types';
 import { CircleHelp } from 'lucide-react';
+import { customFetch } from '@/lib/custom-fetch';
 
 type SelectUniversityProps = {
     selectedUniversity: UniversityType | undefined;
     setSelectedUniversity: React.Dispatch<
         React.SetStateAction<UniversityType | undefined>
     >;
+    setIsProcessing: React.Dispatch<React.SetStateAction<boolean>>;
 };
-const BASE_API_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
 export default function SelectUniversity({
     selectedUniversity,
     setSelectedUniversity,
+    setIsProcessing,
 }: SelectUniversityProps) {
     const [universities, setUniversities] = React.useState<
         UniversityType[]
     >([]);
     React.useEffect(() => {
         const fetchUniversities = async () => {
-            const url = BASE_API_URL + '/auth/get-colleges';
-            console.log(url);
             try {
-                const response = await fetch(url);
+                const response = await customFetch(
+                    '/auth/get-colleges',
+                    { method: 'GET' }
+                );
                 const data = await response.json();
                 if (response?.ok) setUniversities(data.data);
                 else throw new Error(data?.data || data?.message);
@@ -54,7 +57,11 @@ export default function SelectUniversity({
                     const selectedUni = universities.find(
                         (university) => university._id === value
                     );
-                    setSelectedUniversity(selectedUni);
+                    setIsProcessing(true);
+                    setTimeout(() => {
+                        setIsProcessing(false);
+                        setSelectedUniversity(selectedUni);
+                    }, 1000);
                 }}
             >
                 <SelectTrigger className="">
