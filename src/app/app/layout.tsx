@@ -1,5 +1,6 @@
 'use client';
 import BottomNavigation from '@/components/navigation/bottom-navigation';
+import { SideBar } from '@/components/sidebar';
 // import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 // export const metadata: Metadata = {
@@ -12,19 +13,21 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const authToken = localStorage.getItem('authToken');
+    const authToken = localStorage?.getItem('authToken');
     if (!authToken) {
         redirect('/register');
     }
     return (
         <div className="p-3 h-screen w-screen flex items-center justify-center gap-10 bg-background ">
-            <div className="h-full w-3/4 flex flex-col gap-5">
+            <div className="h-full w-3/5 flex flex-col gap-5">
                 <div className="h-[92%] rounded-xl">{children}</div>
                 <div className="h-[8%] rounded-xl">
                     <BottomNavigation />
                 </div>
             </div>
-            <div className="bg-secondary flex-1 h-full rounded-xl"></div>
+            <div className="bg-secondary flex-1 h-full rounded-xl">
+                <SideBar />
+            </div>
         </div>
     );
 }

@@ -11,14 +11,18 @@ import {
     InputOTPSeparator,
     InputOTPSlot,
 } from '@/components/ui/input-otp';
+import Link from 'next/link';
 
 type StudentEmailVerificationProps = {
     email: string;
+    type: 'login' | 'register';
     setEmail: React.Dispatch<React.SetStateAction<string>>;
 };
+const BASE_API_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
 export default function StudentEmailVerification({
     email,
     setEmail,
+    type,
 }: StudentEmailVerificationProps) {
     // local states
     const [isEmailValid, setIsEmailValid] = useState(false);
@@ -26,33 +30,78 @@ export default function StudentEmailVerification({
     const [otp, setOtp] = useState<string>('');
     const router = useRouter();
 
-    const handleEmailSubmit = () => {
-        if (validateEmail(email)) {
-            const promise = () =>
-                new Promise((resolve) =>
-                    setTimeout(() => resolve(setOtpSent(true)), 2000)
-                );
-
-            toast.promise(promise, {
-                loading: 'sending...',
-                success: `Otp sent successfully`,
-                error: (error) => {
-                    return `Error: ${error.message}`;
-                },
+    const handleSendOtp = () => {
+        const promise = () =>
+            new Promise(async (resolve, reject) => {
+                // Make the API call
+                try {
+                    const response = await fetch(
+                        BASE_API_URL +
+                            '/auth/send-otp?email=' +
+                            email +
+                            `&type=${type}`
+                    );
+                    const data = await response.json();
+                    console.log('API data:', data);
+                    if (!response.ok) {
+                        throw new Error(data?.data || data?.message);
+                    }
+                    setOtpSent(true);
+                    resolve('true');
+                } catch (error) {
+                    console.error('API error:', error);
+                    reject(error);
+                }
             });
-        } else {
-            setIsEmailValid(false);
-        }
+
+        toast.promise(promise, {
+            loading: 'Sending OTP...',
+            success: 'OTP sent successfully',
+            error: (error) => `Error: ${error.message}`,
+        });
     };
 
-    const handleOtpSubmit = () => {
-        // Replace with OTP verification logic
-        localStorage.setItem(
-            'dummyAuthToken',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwic2x1ZyI6InNhaGlsMjIxMi5iZTIyQGNoaXRrYXJhLmVkdS5pbiIsImlhdCI6MTUxNjIzOTAyMn0.mgHMpfdvS_zTG-_mS9K_guLUY3syftiCdhGJh2mt2bg'
-        );
-        toast.success('Email verified successfully');
-        router.refresh();
+    const handleVerifyOtp = () => {
+        const promise = () =>
+            new Promise(async (resolve, reject) => {
+                // Make the API call
+                try {
+                    const response = await fetch(
+                        `http://localhost:5000/api/auth/verify-otp?type=${type}`,
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                email,
+                                otp,
+                            }),
+                        }
+                    );
+                    const data = await response.json();
+                    if (!response.ok) {
+                        throw new Error(data?.data || data?.message);
+                    }
+                    localStorage.setItem(
+                        type === 'register'
+                            ? 'dummyAuthToken'
+                            : 'authToken',
+                        data.data.authToken
+                    );
+                    resolve(data.data.authToken);
+                    router.refresh();
+                } catch (error) {
+                    console.error('API error:', error);
+                    reject(error);
+                }
+            });
+
+        toast.promise(promise, {
+            loading: 'verifying otp...',
+            success: 'OTP verified successfully',
+            error: (error) => `Error: ${error.message}`,
+        });
     };
 
     return (
@@ -68,16 +117,27 @@ export default function StudentEmailVerification({
                         campus email? No party—rules are rules! 🤷‍♂️
                     </p>
                 </>
-            ) : (
+            ) : type === 'register' ? (
                 <>
-                    <h2 className="text-3xl font-bold text-center mb-1 ">
-                        Plug in your Campus Email to Unlock the
-                        Ultimate College Buzz! 😵‍💫
+                    <h2 className="text-3xl font-bold text-center mb-1">
+                        Ready to Join the College Fun? Enter Your
+                        Campus Email to Get Started! 🚀
                     </h2>
                     <p className="text-center text-gray-500 mb-6">
                         We’ll send you a secret code (OTP). If it’s
                         not from your campus, sorry—no gate crashers
                         allowed!
+                    </p>
+                </>
+            ) : (
+                <>
+                    <h2 className="text-3xl font-bold text-center mb-1">
+                        Lost Your Password Again? 😵‍💫 Time to Unleash
+                        Your Campus Email Magic! 🧙‍♂️
+                    </h2>
+                    <p className="text-center text-gray-500 mb-6">
+                        We&apos;ll send you a secret code (OTP). No
+                        peeking, no cheating! 🕵️‍♂️
                     </p>
                 </>
             )}
@@ -96,7 +156,7 @@ export default function StudentEmailVerification({
                             }
                         }}
                         placeholder="e.g., yourname@campus.edu"
-                        className="w-full mb-4"
+                        className="w-full mb-1"
                     />
                     {!isEmailValid && email && (
                         <p className="text-red-500 text-sm mb-2">
@@ -104,11 +164,11 @@ export default function StudentEmailVerification({
                             you trying to trick us? 😏
                         </p>
                     )}
-                    <div className="flex items-center justify-center gap-3">
+                    <div className="flex items-center justify-center gap-3 mt-4">
                         <Button
                             variant={'default'}
                             disabled={!isEmailValid}
-                            onClick={handleEmailSubmit}
+                            onClick={handleSendOtp}
                         >
                             Send Me the Code 🚀
                         </Button>
@@ -163,12 +223,35 @@ export default function StudentEmailVerification({
                         <Button
                             variant={'default'}
                             disabled={otp?.length !== 6}
-                            onClick={handleOtpSubmit}
+                            onClick={handleVerifyOtp}
+                            className="py-4 px-10"
                         >
-                            Verify & Let Me In! 🎉
+                            Let Me In! 🎉
                         </Button>
                     </div>
                 </div>
+            )}
+
+            {type === 'login' ? (
+                <p className="text-center text-gray-400 mt-6">
+                    Already have an account?{' '}
+                    <Link
+                        href="/login"
+                        className="text-blue-400 hover:underline"
+                    >
+                        Why are you here then?
+                    </Link>
+                </p>
+            ) : (
+                <p className="text-center text-gray-400 mt-6">
+                    Already a member of the secret society?{' '}
+                    <Link
+                        href="/login"
+                        className="text-blue-400 hover:underline"
+                    >
+                        Log in to unlock the mysteries.
+                    </Link>
+                </p>
             )}
         </div>
     );

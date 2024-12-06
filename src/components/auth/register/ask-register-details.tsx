@@ -22,7 +22,10 @@ export default function AskRegisterDetails({
             </nav>
             <div className="h-full flex items-center justify-center">
                 {selectedUniversity ? (
-                    <CreateUsername university={selectedUniversity} />
+                    <CreateUsername
+                        university={selectedUniversity}
+                        email={email}
+                    />
                 ) : (
                     <SelectUniversity
                         selectedUniversity={selectedUniversity}

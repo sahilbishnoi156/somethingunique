@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 
 type CreateUsernameProps = {
     university: UniversityType;
+    email: string;
 };
 
 type UsernameStatus =
@@ -18,8 +19,10 @@ type UsernameStatus =
     | 'available'
     | 'not-available';
 
+const BASE_API_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
 export default function CreateUsername({
     university,
+    email,
 }: CreateUsernameProps) {
     const [username, setUsername] = useState('');
     const [status, setStatus] = useState<UsernameStatus>('idle');
@@ -38,7 +41,7 @@ export default function CreateUsername({
 
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
-        if (username) {
+        if (username && username.length >= 3) {
             setStatus('searching');
             debounceRef.current = setTimeout(async () => {
                 try {
@@ -65,55 +68,56 @@ export default function CreateUsername({
     }, [username]);
 
     const handleCreateUser = async () => {
-        // if (!username || status !== 'available') return;
-        const data = {
-            username,
-            universityId: university.key,
-        };
-        // try {
-        //     const response = await fetch('/api/users', {
-        //         method: 'POST',
-        //         headers: { 'Content-Type': 'application/json' },
-        //         body: JSON.stringify({
-        //             username,
-        //             universityId: university.key,
-        //         }),
-        //     });
+        if (!username || status !== 'available') return;
+        try {
+            const response = await fetch(
+                BASE_API_URL + '/auth/create-user',
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        username,
+                        college_id: university._id,
+                    }),
+                }
+            );
+            const data = await response.json();
 
-        //     if (!response.ok) {
-        //         const data = await response.json();
-        //         throw new Error(
-        //             data.message || 'Houston, we have a problem!'
-        //         );
-        //     }
+            if (!response.ok) {
+                throw new Error(
+                    data?.data || 'Houston, we have a problem!'
+                );
+            }
+            localStorage.setItem('authToken', data?.data?.authToken);
+            localStorage.removeItem('dummyAuthToken');
 
-        //     await response.json();
-        //     toast.success(
-        //         "Boom! You're in! Time to rock this digital world! 🚀"
-        //     );
-        //     router.push('/app');
-        // } catch {
-        //     toast.error('Yikes! A wild error appeared. Try again!');
-        // }
-
-        console.log(data);
-        localStorage.setItem(
-            'authToken',
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwic2x1ZyI6InNhaGlsYmlzaG5vaSIsImlhdCI6MTUxNjIzOTAyMn0.JqqnbPu2LHFdHiSV6QWtg43y_TH7ZbaDV6kGEstW9FU'
-        );
-        localStorage.removeItem('dummyAuthToken');
-        toast.success(
-            "Boom! You're in! Time to rock this digital world! 🚀"
-        );
-        router.push('/app');
+            toast.success(
+                "Boom! You're in! Time to rock this digital world! 🚀"
+            );
+            router.push('/app');
+        } catch {
+            toast.error('Yikes! A wild error appeared. Try again!');
+        }
     };
 
-    const checkUsernameAvailability = async (username: string) => {
-        return new Promise<boolean>((resolve) => {
-            setTimeout(() => {
-                resolve(username.length % 2 === 0);
-            }, 1000);
-        });
+    const checkUsernameAvailability = async (
+        username: string
+    ): Promise<boolean> => {
+        try {
+            const response = await fetch(
+                BASE_API_URL +
+                    `/auth/check-username-availability?username=${username}`
+            );
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data?.data || data?.message);
+            }
+            return data.data;
+        } catch (error) {
+            console.error('API error:', error);
+            return false;
+        }
     };
 
     const statusMessages = {
