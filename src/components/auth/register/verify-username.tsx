@@ -79,6 +79,9 @@ export default function CreateUsername({
                         email: email,
                         username,
                         college_id: university._id,
+                        avatar:
+                            BASE_API_URL?.replace(/\/api\/?$/, '') +
+                            '/static/images/default-avatar.png',
                     }),
                 }
             );

@@ -2,7 +2,7 @@ import { BOTTOM_NAV_LINKS } from '@/constants/links';
 import { BottomNavigationLink } from '@/types/navigation-links.types';
 import { BottomNavigationItem } from './bottom-nav-item';
 import Link from 'next/link';
-import { CreatePost } from './create-post';
+import { CreatePostButton } from './create-post-button';
 
 export default function BottomNavigation() {
     return (
@@ -12,7 +12,7 @@ export default function BottomNavigation() {
                     <BottomNavigationItem item={link} />
                 </Link>
             ))}
-            <CreatePost />
+            <CreatePostButton />
         </div>
     );
 }

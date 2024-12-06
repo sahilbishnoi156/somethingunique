@@ -4,8 +4,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
 
 type FetchOptions = {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-    body?: Record<string, unknown>;
+    body?: string;
     headers?: Record<string, string>;
+    signal?: AbortSignal;
 };
 export const customFetch = async (
     url: string,
@@ -20,7 +21,8 @@ export const customFetch = async (
                 'authToken'
             )}`,
         },
-        body: JSON.stringify(options.body),
+        signal: options.signal,
+        body: options.body,
     });
     if (response.status === 419) {
         setTimeout(() => {

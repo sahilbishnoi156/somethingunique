@@ -7,4 +7,5 @@ export type BottomNavigationLink = {
     icon: ForwardRefExoticComponent<
         Omit<LucideProps, 'ref'> & RefAttributes<SVGSVGElement>
     >;
+    category?: string;
 };

@@ -11,16 +11,19 @@ export const BOTTOM_NAV_LINKS: BottomNavigationLink[] = [
     {
         name: 'Forum',
         href: '/app/feed?type=forum',
+        category: 'forum',
         icon: UsersRound,
     },
     {
         name: 'Lost & Found',
-        href: '/app/feed?type=lostandfound',
+        href: '/app/feed?type=lostAndFound',
+        category: 'lostAndFound',
         icon: Glasses,
     },
     {
         name: 'Confession',
         href: '/app/feed?type=confession',
+        category: 'confession',
         icon: PartyPopper,
     },
     {
