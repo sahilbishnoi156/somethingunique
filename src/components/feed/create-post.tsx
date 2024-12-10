@@ -7,66 +7,131 @@ import { Button } from '../ui/button';
 import { useDispatch } from 'react-redux';
 import { resetView } from '@/app/store/view-slice';
 import { customFetch } from '@/lib/custom-fetch';
+import Image from 'next/image';
+import { toast } from 'sonner';
+import Loader from '../loader';
+import { useRouter } from 'next/navigation';
 
 export default function CreatePost() {
     const searchParams = useSearchParams();
     const category = searchParams.get('type') || 'forum';
     const dispatch = useDispatch();
+    const router = useRouter();
+    const [isUploading, setIsUploading] = useState(false);
 
-    const [attachments, setAttachments] = useState<File[]>([]);
+    const [attachments, setAttachments] = useState<
+        Array<{ file: File; type: string }>
+    >([]);
     const [caption, setCaption] = useState('');
 
     const handleFileChange = (
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         if (e.target.files) {
-            const validFiles = Array.from(e.target.files).filter(
-                (file) =>
-                    file.type.startsWith('image/') ||
-                    file.type.startsWith('video/')
+            const validFiles = Array.from(e.target.files).map(
+                (file) => {
+                    return {
+                        file,
+                        type: file.type.startsWith('image/')
+                            ? 'image'
+                            : 'video',
+                    };
+                }
             );
-            if (validFiles.length !== e.target.files.length) {
+
+            // Check if there are any invalid files
+            const invalidFiles = validFiles.filter(
+                (fileObj) =>
+                    fileObj.type !== 'image' &&
+                    fileObj.type !== 'video'
+            );
+
+            if (invalidFiles.length > 0) {
                 alert('Only images and videos are allowed!');
             }
+
             setAttachments((prev) => [...prev, ...validFiles]);
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (isUploading) return;
         try {
-            const data = {
-                category,
-                caption,
-                attachments: attachments.map((file) => {
+            setIsUploading(true);
+            const uploadAttachments = await Promise.all(
+                attachments.map(async (fileObj) => {
+                    const formData = new FormData();
+                    formData.append('file', fileObj.file);
+                    formData.append('upload_preset', 'gmgscbus');
+
+                    // Determine the correct URL based on the attachment type
+                    let uploadUrl = '';
+                    if (fileObj.type === 'image') {
+                        uploadUrl =
+                            'https://api.cloudinary.com/v1_1/dlhxapeva/image/upload';
+                    } else if (fileObj.type === 'video') {
+                        uploadUrl =
+                            'https://api.cloudinary.com/v1_1/dlhxapeva/video/upload';
+                    } else {
+                        throw new Error(
+                            'Unsupported attachment type'
+                        );
+                    }
+
+                    const response = await fetch(uploadUrl, {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(
+                            `Upload failed: ${
+                                errorData.message || 'Unknown error'
+                            }`
+                        );
+                    }
+
+                    const data = await response.json();
                     return {
-                        type: file.type.split('/')[0],
-                        url: URL.createObjectURL(file),
+                        type: fileObj.type,
+                        url: data.url,
                     };
-                }),
-            };
-            console.log(data);
-            // API call to post the data.  The server will handle file uploads
+                })
+            );
+
+            // API call to post the data
             const response = await customFetch('/user/create-post', {
                 method: 'POST',
-                body: JSON.stringify(data),
+                body: JSON.stringify({
+                    category,
+                    caption,
+                    attachments: uploadAttachments,
+                }),
             });
 
             if (response.ok) {
-                alert('Post created successfully!');
+                toast.success('Post created successfully!');
                 dispatch(resetView());
+                router.push('/app/feed?category=' + category);
             } else {
-                const errorData = await response.json(); // Try to get error details from the response.
-                alert(
-                    `Failed to create post! ${
-                        errorData?.data ||
+                const errorData = await response.json();
+                throw new Error(
+                    errorData?.data ||
                         errorData?.message ||
-                        'Unknown error'
-                    }`
+                        `Failed to create post!`
                 );
             }
         } catch (error) {
-            console.error('Error submitting post:', error); // Log the actual error for debugging.
+            if (error instanceof Error) {
+                console.error('Error submitting post:', error); // Log the actual error for debugging.
+                toast.error(error.message);
+            } else {
+                console.error('Error submitting post:', error);
+            }
+        } finally {
+            setIsUploading(false);
         }
     };
 
@@ -84,7 +149,12 @@ export default function CreatePost() {
     };
 
     return (
-        <div className="h-full w-full flex flex-col justify-between p-4">
+        <div className="h-full w-full flex flex-col justify-between p-4 relative">
+            {isUploading && (
+                <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <Loader />
+                </div>
+            )}
             <div>
                 <div className="text-start mb-4">
                     <h1 className="text-3xl font-bold ">
@@ -125,6 +195,7 @@ export default function CreatePost() {
                         />
                         <button
                             type="button"
+                            disabled={isUploading}
                             onClick={() =>
                                 document
                                     .getElementById('fileInput')
@@ -142,29 +213,45 @@ export default function CreatePost() {
                     {attachments.map((file, index) => (
                         <div
                             key={index}
-                            className="flex-shrink-0 w-24 h-24"
+                            className="flex-shrink-0 w-24 h-24 relative rounded-md"
                         >
-                            {file.type.startsWith('image/') ? (
-                                <img
-                                    src={URL.createObjectURL(file)}
+                            {file.type == 'image' ? (
+                                <Image
+                                    src={URL.createObjectURL(
+                                        file.file
+                                    )}
                                     alt="Preview"
                                     className="w-full h-full object-cover rounded-md"
+                                    layout="fill"
+                                    objectFit="cover"
                                 />
                             ) : (
                                 <video
-                                    src={URL.createObjectURL(file)}
+                                    src={URL.createObjectURL(
+                                        file.file
+                                    )}
                                     className="w-full h-full object-cover rounded-md"
                                     controls
                                 />
                             )}
                         </div>
                     ))}
+                    <div>
+                        <Button
+                            onClick={() => setAttachments([])}
+                            disabled={isUploading}
+                            variant="destructive"
+                        >
+                            Remove All
+                        </Button>
+                    </div>
                 </div>
             )}
             <div className="flex justify-end items-center mt-4 gap-2">
                 <Button
                     type="button"
                     variant={'destructive'}
+                    disabled={isUploading}
                     className="text-lg"
                     onClick={() => dispatch(resetView())}
                 >
@@ -174,6 +261,7 @@ export default function CreatePost() {
                 <Button
                     type="submit"
                     onClick={handleSubmit}
+                    disabled={isUploading || caption.trim() === ''}
                     className="text-lg"
                 >
                     <RocketIcon className="h-5 w-5 inline-block" />{' '}

@@ -5,12 +5,15 @@ export type PostType = {
     caption: string;
     category: PostCategory;
     user_id: UserType;
+    upvotesCount: number;
+    downvotesCount: number;
+    userVote: VoteType | null;
     college_id: CollageType;
     is_approved: boolean;
     attachments: [
         {
             url: string;
-            type: string;
+            type: 'video' | 'image';
         }
     ];
     createdAt: string;
@@ -21,9 +24,12 @@ export type UserType = {
     _id: string;
     username: string;
     email: string;
+    bio?: string;
     college_id: string | CollageType;
     createdAt: string;
     avatar: string;
+    posts?: PostType[];
+    title?: string;
 };
 
 export type CollageType = {
@@ -32,3 +38,17 @@ export type CollageType = {
     key: string;
     createdAt: string;
 };
+
+export type CommentType = {
+    _id: string;
+    content: string;
+    user_id: UserType;
+    post_id: string;
+    parent_comment_id: string | null;
+    createdAt: string;
+    replies?: CommentType[];
+    replyCount?: number;
+    repliedToUsername?: null | string;
+};
+
+export type VoteType = 'upvote' | 'downvote';

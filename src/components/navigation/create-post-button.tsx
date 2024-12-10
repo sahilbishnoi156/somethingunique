@@ -31,6 +31,9 @@ export const CreatePostButton = () => {
                         onClick={() => dispatch(toggleCreatePost())}
                     >
                         <Plus />
+                        <div className="sm:hidden block">
+                            Create Post
+                        </div>
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent>

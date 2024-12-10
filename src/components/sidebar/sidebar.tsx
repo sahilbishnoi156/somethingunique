@@ -2,11 +2,13 @@ import { RootState } from '@/app/store/store';
 import { resetView } from '@/app/store/view-slice';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import CreatePost from './feed/create-post';
+import CreatePost from '../feed/create-post';
 import { X } from 'lucide-react';
-import DefaultSidebar from './default-sidebar';
+import DefaultSidebar from '../default-sidebar';
+import Comments from './show-comments';
+import SearchUsers from './search-users';
 
-const Component2 = () => {
+const SideBar = () => {
     const { viewType, postId } = useSelector(
         (state: RootState) => state.view
     );
@@ -28,11 +30,12 @@ const Component2 = () => {
             )}
             {viewType === 'createPost' && <CreatePost />}
             {viewType === 'showComments' && (
-                <div>Showing comments for post ID: {postId}</div>
+                <Comments postId={postId} />
             )}
+            {viewType === 'showSearch' && <SearchUsers />}
             {viewType === 'default' && <DefaultSidebar />}
         </>
     );
 };
 
-export default Component2;
+export default SideBar;

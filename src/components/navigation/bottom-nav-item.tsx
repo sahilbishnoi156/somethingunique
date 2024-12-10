@@ -11,10 +11,11 @@ import { useSearchParams } from 'next/navigation';
 
 interface BottomNavigationItemProps {
     item: BottomNavigationLink;
+    isSmall?: boolean;
 }
 export const BottomNavigationItem: React.FC<
     BottomNavigationItemProps
-> = ({ item }) => {
+> = ({ item, isSmall = false }) => {
     const params = useSearchParams();
     const feedType = params.get('type');
 
@@ -26,10 +27,12 @@ export const BottomNavigationItem: React.FC<
                     <Button
                         variant={isActive ? 'default' : 'secondary'}
                         size={'lg'}
-                        className="h-12  rounded-xl duration-300 transition-all"
+                        className="h-12 w-full rounded-xl duration-300 transition-all"
                     >
                         <item.icon />
-                        {isActive && <div>{item.name}</div>}
+                        {(isActive || isSmall) && (
+                            <div>{item.name}</div>
+                        )}
                     </Button>
                 </TooltipTrigger>
                 <TooltipContent>

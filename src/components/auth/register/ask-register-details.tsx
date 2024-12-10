@@ -33,6 +33,7 @@ export default function AskRegisterDetails({
                         university={selectedUniversity}
                         email={email}
                         setIsProcessing={setIsProcessing}
+                        type="register"
                     />
                 ) : (
                     <SelectUniversity

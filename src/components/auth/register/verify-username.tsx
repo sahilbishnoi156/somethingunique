@@ -15,9 +15,11 @@ import {
 } from '@/constants/sentences';
 
 type CreateUsernameProps = {
-    university: UniversityType;
+    university?: UniversityType;
     email: string;
     setIsProcessing: React.Dispatch<React.SetStateAction<boolean>>;
+    type: 'register' | 'update';
+    oldUsername?: string;
 };
 
 type UsernameStatus =
@@ -31,8 +33,10 @@ export default function CreateUsername({
     university,
     email,
     setIsProcessing,
+    type = 'register',
+    oldUsername,
 }: CreateUsernameProps) {
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState(oldUsername || '');
     const [status, setStatus] = useState<UsernameStatus>('idle');
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
     const router = useRouter();
@@ -49,7 +53,11 @@ export default function CreateUsername({
 
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
-        if (username && username.length >= 3) {
+        if (
+            username &&
+            username.length >= 3 &&
+            username !== oldUsername
+        ) {
             setStatus('searching');
             debounceRef.current = setTimeout(async () => {
                 try {
@@ -73,10 +81,15 @@ export default function CreateUsername({
             if (debounceRef.current)
                 clearTimeout(debounceRef.current);
         };
-    }, [username]);
+    }, [oldUsername, username]);
 
     const handleCreateUser = async () => {
-        if (!username || status !== 'available') return;
+        if (
+            !username ||
+            status !== 'available' ||
+            type !== 'register'
+        )
+            return;
         try {
             setIsProcessing(true);
             const response = await customFetch('/auth/create-user', {
@@ -84,7 +97,7 @@ export default function CreateUsername({
                 body: JSON.stringify({
                     email: email,
                     username,
-                    college_id: university._id,
+                    college_id: university?._id,
                     avatar:
                         BASE_API_URL?.replace(/\/api\/?$/, '') +
                         '/static/images/default-avatar.png',
@@ -94,7 +107,9 @@ export default function CreateUsername({
 
             if (!response.ok) {
                 throw new Error(
-                    data?.data || 'Houston, we have a problem!'
+                    data?.data ||
+                        data?.message ||
+                        'Houston, we have a problem!'
                 );
             }
             localStorage.setItem('authToken', data?.data?.authToken);
@@ -104,9 +119,54 @@ export default function CreateUsername({
                 "Boom! You're in! Time to rock this digital world! 🚀"
             );
             router.push('/app');
-        } catch {
-            toast.error('Yikes! A wild error appeared. Try again!');
+        } catch (error) {
+            if (error instanceof Error)
+                toast.error(
+                    error?.message ||
+                        'Yikes! A wild error appeared. Try again!'
+                );
         } finally {
+            setIsProcessing(false);
+        }
+    };
+
+    const updateUsername = async () => {
+        if (!username || status !== 'available' || type !== 'update')
+            return;
+        try {
+            setIsProcessing(true);
+            const response = await customFetch(
+                '/user/update-username',
+                {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        username,
+                    }),
+                }
+            );
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data?.data ||
+                        data?.message ||
+                        'Houston, we have a problem!'
+                );
+            }
+            toast.success(
+                'Username updated successfully! Time to show off!'
+            );
+            localStorage.setItem('authToken', data?.data?.authToken);
+            setTimeout(() => {
+                router.push('/profile');
+                setIsProcessing(false);
+            }, 1000);
+        } catch (error) {
+            if (error instanceof Error)
+                toast.error(
+                    error?.message ||
+                        'Yikes! A wild error appeared. Try again!'
+                );
             setIsProcessing(false);
         }
     };
@@ -174,12 +234,21 @@ export default function CreateUsername({
                 <div className="w-full flex items-center justify-center">
                     <Button
                         variant="default"
-                        disabled={status !== 'available'}
-                        onClick={handleCreateUser}
+                        disabled={
+                            status !== 'available' &&
+                            username === oldUsername
+                        }
+                        onClick={
+                            type === 'register'
+                                ? handleCreateUser
+                                : updateUsername
+                        }
                         className="px-10"
                     >
                         {status === 'available'
-                            ? "Let's Roll! 🎲"
+                            ? type === 'register'
+                                ? "Let's Roll! 🎲"
+                                : 'Update Item'
                             : 'Hold on!'}
                     </Button>
                 </div>

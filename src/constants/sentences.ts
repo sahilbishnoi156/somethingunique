@@ -36,3 +36,51 @@ export const USERNAME_AVAILABLE_MSG = [
     'That username’s available. Go ahead, make it your own.',
     'Bam! Username available. It’s like winning the lottery!',
 ];
+export const LANDING_PAGE_HEADING = [
+    'Embrace the Chaos, Master the Course. 📚🔥',
+    'Your Virtual Campus, Your Rules. 🎓😎',
+    'Procrastinate Together, Achieve More (Maybe). 🦥⏰',
+    'Study Smarter, Not Harder. (Or Just Have Fun.) 🧠🥳',
+    'Level Up Your Learning Game. 🚀🎮',
+    'Your All-In-One Study Hub. 🌐💡',
+    'Beyond Books and Notes. 📚📈',
+    'Where Learning Meets Community. 🧑‍🤝‍🧑',
+    'Your Digital Study Squad, Awaits. 👥💻',
+    'Redefine Your Study Routine. 🔄📖',
+];
+
+export const LANDING_PAGE_DESCRIPTION = [
+    'Tired of endless textbooks and boring lectures?',
+    'Join a community of like-minded students.',
+    'Find study buddies, share notes, and ace your exams.',
+    'Access a wealth of study resources and tips.',
+    'Make learning fun and engaging.',
+    'Your one-stop shop for all your study needs.',
+    'Level up your academic journey with ease.',
+    'Break free from traditional learning methods.',
+    'Discover a new way to learn and connect.',
+    'Your future starts here.',
+];
+
+export const IDENTITIES = [
+    'Agile Fox',
+    'Wise Owl',
+    'Mighty Lion',
+    'Stealthy Panther',
+    'Playful Dolphin',
+    'Majestic Eagle',
+    'Graceful Swan',
+    'Cuddly Panda',
+    'Speedy Cheetah',
+    'Clever Monkey',
+    'Loyal Dog',
+    'Curious Cat',
+    'Strong Bear',
+    'Gentle Giraffe',
+    'Sly Raccoon',
+    'Brave Wolf',
+    'Sneaky Snake',
+    'Magnificent Tiger',
+    'Silent Owl',
+    'Powerful Elephant',
+];

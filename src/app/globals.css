@@ -151,7 +151,6 @@ body {
     /* White for dark theme */
 }
 
-
 /* loader css */
 /* From Uiverse.io by G4b413l */
 .three-body {
@@ -205,7 +204,8 @@ body {
 .three-body__dot:nth-child(2)::after {
     bottom: 0;
     left: 0;
-    animation: wobble1 var(--uib-speed) infinite calc(var(--uib-speed) * -0.15) ease-in-out;
+    animation: wobble1 var(--uib-speed) infinite
+        calc(var(--uib-speed) * -0.15) ease-in-out;
 }
 
 .three-body__dot:nth-child(3) {
@@ -231,7 +231,6 @@ body {
 }
 
 @keyframes wobble1 {
-
     0%,
     100% {
         transform: translateY(0%) scale(1);
@@ -245,7 +244,6 @@ body {
 }
 
 @keyframes wobble2 {
-
     0%,
     100% {
         transform: translateY(0%) scale(1);

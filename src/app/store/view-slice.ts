@@ -3,7 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 interface ViewState {
-    viewType: 'default' | 'createPost' | 'showComments';
+    viewType:
+        | 'default'
+        | 'createPost'
+        | 'showComments'
+        | 'showSearch';
     postId: string | null; // To store the post ID for showing comments
 }
 
@@ -33,10 +37,17 @@ export const viewSlice = createSlice({
             state.viewType = 'default';
             state.postId = null;
         },
+        showSearch: (state) => {
+            state.viewType = 'showSearch';
+        },
     },
 });
 
-export const { toggleCreatePost, showComments, resetView } =
-    viewSlice.actions;
+export const {
+    toggleCreatePost,
+    showComments,
+    resetView,
+    showSearch,
+} = viewSlice.actions;
 
 export default viewSlice.reducer;

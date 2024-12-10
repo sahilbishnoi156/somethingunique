@@ -8,6 +8,7 @@ import React from 'react';
 export default function Page() {
     const params = useSearchParams();
     const feedType = params.get('type');
+
     if (!POST_CATEGORIES.includes(feedType as PostCategory)) {
         redirect('/app/feed?type=forum');
     } else {

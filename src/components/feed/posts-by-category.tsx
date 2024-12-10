@@ -7,6 +7,8 @@ import Loader from '../loader';
 import { getRandomElement } from '@/lib/random-item';
 import { NO_POST_MESSAGES } from '@/constants/sentences';
 import Image from 'next/image';
+import { parseJwt } from '@/lib/jwt';
+import { redirect } from 'next/navigation';
 
 export default function PostByCategory({
     category,
@@ -14,11 +16,16 @@ export default function PostByCategory({
     category: PostCategory;
 }) {
     const [posts, setPosts] = useState<PostType[]>([]);
-    const [isLoading, setIsLoading] = useState(false); // Add loading state
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<null | {
         message: string;
         name: string;
     }>(null); // Add error state
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        redirect('/login');
+    }
+    const user = parseJwt(token).user;
 
     useEffect(() => {
         const controller = new AbortController(); //For AbortController
@@ -86,7 +93,11 @@ export default function PostByCategory({
                 </div>
             ) : (
                 posts.map((post) => (
-                    <PostItem key={post._id} post={post} />
+                    <PostItem
+                        key={post._id}
+                        post={post}
+                        userId={user?.id || ''}
+                    />
                 ))
             )}
         </div>
