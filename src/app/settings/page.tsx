@@ -9,8 +9,13 @@ import {
 import AccountSetting from '@/components/settings/account-setting';
 import EditProfile from '@/components/settings/edit-profile';
 import Themes from '@/components/settings/themes'; // New component
-import { useState } from 'react';
+import React, { useState } from 'react';
 import BackButton from '@/components/back-button';
+import {
+    redirect,
+    useRouter,
+    useSearchParams,
+} from 'next/navigation';
 
 const SETTINGS_COMPONENTS = {
     account: AccountSetting,
@@ -18,7 +23,27 @@ const SETTINGS_COMPONENTS = {
     themes: Themes,
 };
 
+const tabTypes = Object.keys(SETTINGS_COMPONENTS) as Array<
+    keyof typeof SETTINGS_COMPONENTS
+>;
+
 export default function SettingsPage() {
+    const params = useSearchParams();
+    const tab = params.get('tab');
+    const router = useRouter();
+
+    React.useEffect(() => {
+        if (
+            tabTypes.includes(tab as keyof typeof SETTINGS_COMPONENTS)
+        ) {
+            setSelectedComponentKey(
+                tab as keyof typeof SETTINGS_COMPONENTS
+            );
+        } else {
+            redirect('/settings?tab=account');
+        }
+    }, [tab]);
+
     const [selectedComponentKey, setSelectedComponentKey] =
         useState<keyof typeof SETTINGS_COMPONENTS>('account');
 
@@ -48,8 +73,8 @@ export default function SettingsPage() {
                                             : 'bg-secondary text-primary hover:bg-foreground/20'
                                     }`}
                                     onClick={() =>
-                                        setSelectedComponentKey(
-                                            key as keyof typeof SETTINGS_COMPONENTS
+                                        router.replace(
+                                            `/settings?tab=${key}`
                                         )
                                     }
                                 >
@@ -66,9 +91,7 @@ export default function SettingsPage() {
                     <Select
                         value={selectedComponentKey}
                         onValueChange={(value) =>
-                            setSelectedComponentKey(
-                                value as keyof typeof SETTINGS_COMPONENTS
-                            )
+                            router.replace(`/settings?tab=${value}`)
                         }
                     >
                         <SelectTrigger className="w-full bg-gray-100 text-gray-800 border border-gray-300">

@@ -23,6 +23,7 @@ const SideBar = () => {
                         top: '20px',
                         right: '20px',
                     }}
+                    className="z-50"
                     onClick={() => dispatch(resetView())}
                 >
                     <X />

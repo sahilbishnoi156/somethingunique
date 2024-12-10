@@ -50,7 +50,7 @@ export default function AccountSetting() {
                 Your Legendary Username
             </p>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-1 gap-5">
-                <div className="relative w-1/2">
+                <div className="relative sm:w-1/2 w-full">
                     <input
                         type="text"
                         id="hs-floating-input-email-value"

@@ -3,7 +3,7 @@
 import { resetView } from '@/app/store/view-slice';
 import { customFetch } from '@/lib/custom-fetch';
 import { parseJwt } from '@/lib/jwt';
-import { CommentType } from '@/types/feed.types';
+import { CommentType, PostType, UserType } from '@/types/feed.types';
 import { Trash2 } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import React, { useState, useEffect, useCallback } from 'react';
@@ -30,6 +30,8 @@ const Comments = ({ postId }: { postId: string | null }) => {
     const dispatch = useDispatch();
     const [comments, setComments] = useState<CommentType[]>([]);
     const [newComment, setNewComment] = useState('');
+    const [currPost, setCurrPost] = useState<PostType>();
+    const [currUser, setCurrUser] = useState<UserType>();
 
     const token = localStorage.getItem('authToken');
     if (!token) {
@@ -57,7 +59,9 @@ const Comments = ({ postId }: { postId: string | null }) => {
                             'Failed to fetch comments'
                     );
                 }
-                setComments(data.data);
+                setComments(data.data.comments);
+                setCurrUser(data.data.user);
+                setCurrPost(data.data.post);
             } catch (error) {
                 console.error('Error fetching comments:', error);
                 toast.error(
@@ -76,7 +80,6 @@ const Comments = ({ postId }: { postId: string | null }) => {
                 method: 'POST',
                 body: JSON.stringify({
                     post_id: postId,
-                    user_id: user.id,
                     content: newComment,
                 }),
             });
@@ -97,7 +100,45 @@ const Comments = ({ postId }: { postId: string | null }) => {
                 (error as Error).message || 'Failed to add comment'
             );
         }
-    }, [postId, user.id, newComment]);
+    }, [postId, newComment]);
+
+    const renderCaption = () => {
+        // Update regex to capture everything after @ until a space or end of string
+        const mentionRegex = /@(\S+?)(?=\s|$)/g;
+        const hashtagRegex = /#(\S+?)(?=\s|$)/g;
+
+        // Split caption into parts matching mentions and hashtags
+        const parts =
+            currPost?.caption.split(/(@\S+?(\s|$)|#\S+?(\s|$))/g) ||
+            [];
+
+        return parts.map((part, index) => {
+            if (mentionRegex.test(part)) {
+                // Extract mention text without the "@" for the profile link
+                const mention = part
+                    .match(mentionRegex)?.[0]
+                    .slice(1); // Remove "@"
+                return (
+                    <Link href={'/profile/' + mention} key={index}>
+                        <span className="text-blue-500 cursor-pointer hover:underline">
+                            {part}
+                        </span>
+                    </Link>
+                );
+            } else if (hashtagRegex.test(part)) {
+                return (
+                    <span
+                        key={index}
+                        className="text-blue-500 cursor-pointer"
+                    >
+                        {part}
+                    </span>
+                );
+            } else {
+                return <span key={index}>{part}</span>;
+            }
+        });
+    };
 
     const handleDeleteComment = useCallback(
         async (commentId: string) => {
@@ -165,7 +206,7 @@ const Comments = ({ postId }: { postId: string | null }) => {
                                     {comment.user_id.username}
                                 </CardTitle>
                                 <div>
-                                    <p className="text-xs text-gray-500 relative bottom-1">
+                                    <p className="text-xs text-gray-500 ">
                                         {moment(
                                             comment.createdAt
                                         ).fromNow()}
@@ -205,18 +246,63 @@ const Comments = ({ postId }: { postId: string | null }) => {
     return (
         <div className="space-y-4 p-4">
             <h3 className="text-2xl font-bold">Yap Yap 🗨️</h3>
+            <CardContent className="p-4 flex flex-col justify-center items-end w-full">
+                <div className="flex gap-2 w-full items-center">
+                    <Avatar>
+                        <AvatarImage
+                            src={
+                                currPost?.user_id?.avatar ||
+                                `/placeholder.svg?height=40&width=40`
+                            }
+                            className="object-cover rounded-full"
+                            alt={currPost?.user_id?.username}
+                        />
+                        <AvatarFallback>
+                            {currPost?.user_id?.username
+                                .slice(0, 2)
+                                .toUpperCase()}
+                        </AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <CardTitle className="font-medium">
+                            {currPost?.user_id?.username}
+                        </CardTitle>
+                        <p className="text-xs text-gray-500 ">
+                            {moment(currPost?.createdAt).fromNow()}
+                        </p>
+                    </div>
+                </div>
+                <div>{renderCaption()}</div>
+            </CardContent>
             <Card>
-                <CardContent className="p-4">
-                    <Input
-                        value={newComment}
-                        onChange={(e) =>
-                            setNewComment(e.target.value)
-                        }
-                        placeholder="What's the buzz? 🐝"
-                        className="mb-2"
-                        maxLength={300}
-                        minLength={3}
-                    />
+                <CardContent className="p-4 flex flex-col justify-center items-end w-full">
+                    <div className="flex gap-2 w-full">
+                        <Avatar>
+                            <AvatarImage
+                                src={
+                                    currUser?.avatar ||
+                                    `/placeholder.svg?height=40&width=40`
+                                }
+                                className="object-cover rounded-full"
+                                alt={currUser?.username}
+                            />
+                            <AvatarFallback>
+                                {currUser?.username
+                                    .slice(0, 2)
+                                    .toUpperCase()}
+                            </AvatarFallback>
+                        </Avatar>
+                        <Input
+                            value={newComment}
+                            onChange={(e) =>
+                                setNewComment(e.target.value)
+                            }
+                            placeholder="What's the buzz? 🐝"
+                            className="mb-2"
+                            maxLength={300}
+                            minLength={3}
+                        />
+                    </div>
                     <Button
                         onClick={handleNewComment}
                         className="self-end"

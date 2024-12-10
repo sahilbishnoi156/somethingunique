@@ -240,22 +240,32 @@ export default function ProfilePage() {
                                 )}
                             </Button>
                             {isMyProfile && (
-                                <Button
-                                    className="flex items-center"
-                                    onClick={handleUpdateBio}
-                                >
-                                    {editBio ? (
-                                        <>
-                                            <Check size={15} />
-                                            <span>Save Bio</span>
-                                        </>
-                                    ) : (
-                                        <>
+                                <>
+                                    <Button
+                                        className="flex items-center"
+                                        onClick={handleUpdateBio}
+                                    >
+                                        {editBio ? (
+                                            <>
+                                                <Check size={15} />
+                                                <span>Save Bio</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Pencil size={15} />
+                                                <span>Edit Bio</span>
+                                            </>
+                                        )}
+                                    </Button>
+                                    <Link
+                                        href={'/settings?tab=profile'}
+                                    >
+                                        <Button className="flex items-center">
                                             <Pencil size={15} />
-                                            <span>Edit Bio</span>
-                                        </>
-                                    )}
-                                </Button>
+                                            <span>Edit Profile</span>
+                                        </Button>
+                                    </Link>
+                                </>
                             )}
                         </div>
                     </div>

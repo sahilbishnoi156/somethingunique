@@ -104,6 +104,7 @@ const UserSearch = () => {
                                         user?.avatar ||
                                         `/placeholder.svg?height=40&width=40`
                                     }
+                                    className="object-cover"
                                     alt={user.username}
                                 />
                                 <AvatarFallback>

@@ -56,6 +56,12 @@ export default function CreatePost() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (caption.length < 4) {
+            toast.error(
+                'Caption must be at least 4 characters long!'
+            );
+            return;
+        }
         if (isUploading) return;
         try {
             setIsUploading(true);
@@ -114,7 +120,7 @@ export default function CreatePost() {
             if (response.ok) {
                 toast.success('Post created successfully!');
                 dispatch(resetView());
-                router.push('/app/feed?category=' + category);
+                router.push('/app/feed?type=' + category);
             } else {
                 const errorData = await response.json();
                 throw new Error(
@@ -170,6 +176,8 @@ export default function CreatePost() {
                     <div className="relative w-full min-w-[200px]">
                         <textarea
                             rows={8}
+                            minLength={3}
+                            maxLength={400}
                             className="peer h-full min-h-[100px] w-full !resize-none  rounded-[7px] border border-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal  outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-gray-200 placeholder-shown:border-t-gray-200 focus:border-2 focus:border-white focus:border-t-transparent focus:outline-0 disabled:resize-none disabled:border-0 disabled:bg-gray-400"
                             placeholder=" "
                             onChange={(e) =>
