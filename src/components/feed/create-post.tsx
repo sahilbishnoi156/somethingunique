@@ -5,18 +5,16 @@ import { useSearchParams } from 'next/navigation';
 import { RocketIcon, XCircleIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useDispatch } from 'react-redux';
-import { resetView } from '@/app/store/view-slice';
+import { resetView, setPosts } from '@/app/store/view-slice';
 import { customFetch } from '@/lib/custom-fetch';
 import Image from 'next/image';
 import { toast } from 'sonner';
 import Loader from '../loader';
-import { useRouter } from 'next/navigation';
 
 export default function CreatePost() {
     const searchParams = useSearchParams();
     const category = searchParams.get('type') || 'forum';
     const dispatch = useDispatch();
-    const router = useRouter();
     const [isUploading, setIsUploading] = useState(false);
 
     const [attachments, setAttachments] = useState<
@@ -118,9 +116,10 @@ export default function CreatePost() {
             });
 
             if (response.ok) {
+                const data = await response.json();
                 toast.success('Post created successfully!');
                 dispatch(resetView());
-                router.push('/app/feed?type=' + category);
+                dispatch(setPosts([data.data]));
             } else {
                 const errorData = await response.json();
                 throw new Error(

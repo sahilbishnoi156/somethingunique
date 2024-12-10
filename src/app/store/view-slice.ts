@@ -1,4 +1,5 @@
 // viewSlice.ts
+import { PostType } from '@/types/feed.types';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
@@ -9,11 +10,13 @@ interface ViewState {
         | 'showComments'
         | 'showSearch';
     postId: string | null; // To store the post ID for showing comments
+    posts: PostType[];
 }
 
 const initialState: ViewState = {
     viewType: 'default',
     postId: null,
+    posts: [],
 };
 
 export const viewSlice = createSlice({
@@ -40,6 +43,9 @@ export const viewSlice = createSlice({
         showSearch: (state) => {
             state.viewType = 'showSearch';
         },
+        setPosts: (state, action: PayloadAction<PostType[]>) => {
+            state.posts = [...action.payload, ...state.posts];
+        },
     },
 });
 
@@ -47,6 +53,7 @@ export const {
     toggleCreatePost,
     showComments,
     resetView,
+    setPosts,
     showSearch,
 } = viewSlice.actions;
 

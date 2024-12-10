@@ -1,5 +1,4 @@
 import { customFetch } from '@/lib/custom-fetch';
-import { PostType } from '@/types/feed.types';
 import { PostCategory } from '@/types/post-category.types';
 import React, { useEffect, useState } from 'react';
 import PostItem from './post-item';
@@ -9,13 +8,18 @@ import { NO_POST_MESSAGES } from '@/constants/sentences';
 import Image from 'next/image';
 import { parseJwt } from '@/lib/jwt';
 import { redirect } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/app/store/store';
+import { setPosts } from '@/app/store/view-slice';
+import { toast } from 'sonner';
 
 export default function PostByCategory({
     category,
 }: {
     category: PostCategory;
 }) {
-    const [posts, setPosts] = useState<PostType[]>([]);
+    const { posts } = useSelector((state: RootState) => state.view);
+    const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<null | {
         message: string;
@@ -40,16 +44,22 @@ export default function PostByCategory({
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(
-                        errorData.message || 'Failed to fetch posts'
+                        errorData.data ||
+                            errorData.message ||
+                            'Failed to fetch posts'
                     );
                 }
                 const { data: fetchedPosts } = await response.json();
-                setPosts(fetchedPosts);
+                const newArray = fetchedPosts.reverse();
+                dispatch(setPosts(newArray));
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch (error: any) {
-                if (error.name !== 'AbortError') {
-                    //Ignore AbortError
-                    setError(error);
+            } catch (error) {
+                if (error instanceof Error) {
+                    if (error.name !== 'AbortError') {
+                        //Ignore AbortError
+                        setError(error);
+                    }
+                    toast.error(error.message);
                 }
             } finally {
                 setIsLoading(false);
@@ -59,7 +69,7 @@ export default function PostByCategory({
         fetchData();
 
         return () => controller.abort(); // Clean up on unmount
-    }, [category]);
+    }, [category, dispatch]);
 
     if (isLoading) {
         return (
