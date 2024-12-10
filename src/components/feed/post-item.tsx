@@ -142,9 +142,9 @@ export default function PostItem({
         const hashtagRegex = /#(\S+?)(?=\s|$)/g;
 
         // Split caption into parts matching mentions and hashtags
-        const parts = post.caption.split(
-            /(@\S+?(\s|$)|#\S+?(\s|$))/g
-        );
+        const parts = post.caption
+            .trim()
+            .split(/(@\S+?(\s|$)|#\S+?(\s|$))/g);
 
         return parts.map((part, index) => {
             if (mentionRegex.test(part)) {

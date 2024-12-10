@@ -24,7 +24,7 @@ export default function DefaultSidebar() {
                     size={'lg'}
                     className="text-lg"
                 >
-                    Get Trending Posts
+                    Trending
                 </Button>
                 <Button
                     variant={'secondary'}

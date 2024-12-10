@@ -109,8 +109,9 @@ const Comments = ({ postId }: { postId: string | null }) => {
 
         // Split caption into parts matching mentions and hashtags
         const parts =
-            currPost?.caption.split(/(@\S+?(\s|$)|#\S+?(\s|$))/g) ||
-            [];
+            currPost?.caption
+                .trim()
+                .split(/(@\S+?(\s|$)|#\S+?(\s|$))/g) || [];
 
         return parts.map((part, index) => {
             if (mentionRegex.test(part)) {
@@ -185,7 +186,7 @@ const Comments = ({ postId }: { postId: string | null }) => {
                             '/profile/' + comment?.user_id?.username
                         }
                     >
-                        <CardHeader className="flex flex-row items-center gap-3 p-4">
+                        <CardHeader className="flex flex-row items-center gap-3 p-3">
                             <Avatar>
                                 <AvatarImage
                                     src={
@@ -215,11 +216,11 @@ const Comments = ({ postId }: { postId: string | null }) => {
                             </div>
                         </CardHeader>
                     </Link>
-                    <CardContent className="p-4 pt-0">
+                    <CardContent className="p-3 pt-0">
                         <span>{comment.content}</span>
                     </CardContent>
-                    <CardFooter className="flex justify-end p-4">
-                        {user.id === comment.user_id._id && (
+                    {user.id === comment.user_id._id && (
+                        <CardFooter className="flex justify-end p-3">
                             <Button
                                 variant="ghost"
                                 size="sm"
@@ -231,8 +232,8 @@ const Comments = ({ postId }: { postId: string | null }) => {
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Delete
                             </Button>
-                        )}
-                    </CardFooter>
+                        </CardFooter>
+                    )}
                 </Card>
             ));
         },
@@ -244,9 +245,9 @@ const Comments = ({ postId }: { postId: string | null }) => {
     }
 
     return (
-        <div className="space-y-4 p-4">
+        <div className="space-y-4 p-4 relative h-full">
             <h3 className="text-2xl font-bold">Yap Yap 🗨️</h3>
-            <CardContent className="p-4 flex flex-col justify-center items-end w-full">
+            <CardContent className="p-4 w-full border-b">
                 <div className="flex gap-2 w-full items-center">
                     <Avatar>
                         <AvatarImage
@@ -272,9 +273,11 @@ const Comments = ({ postId }: { postId: string | null }) => {
                         </p>
                     </div>
                 </div>
-                <div>{renderCaption()}</div>
+                <div className="mt-2 whitespace-pre">
+                    {renderCaption()}
+                </div>
             </CardContent>
-            <Card>
+            <Card className="absolute w-full bottom-0 left-0">
                 <CardContent className="p-4 flex flex-col justify-center items-end w-full">
                     <div className="flex gap-2 w-full">
                         <Avatar>
