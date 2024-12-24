@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Something Unique
 
-## Getting Started
+A dedicated platform for college students to interact, share, and collaborate within their universities. Built with a focus on anonymity, modern design, and engaging user experiences.
 
-First, run the development server:
+## Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **University Forums**: Discuss topics specific to your university.
+- **Lost & Found Section**: Locate or report missing items.
+- **Anonymous Confessions**: Share thoughts anonymously.
+- **Profile Management**: Customize profiles with anonymity options.
+- **AI Moderation (Future Scope)**: Automated moderation for posts.
+- **Role-Based Access**: Super Admin, College Admins, Club Admins, and Students.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Functional Requirements
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- User registration/login via student email and OTP.
+- Forums for each university with search functionality.
+- Ability to create posts with attachments (images/videos).
+- Admin roles for managing content and users.
+- Anonymous posting with username visibility for moderation.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Non-Functional Requirements
 
-## Learn More
+- Scalability to support additional colleges.
+- Secure data handling and user privacy.
+- Fun and intuitive interface tailored for Gen Z.
 
-To learn more about Next.js, take a look at the following resources:
+## Technology Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Frontend**: Next.js, Tailwind CSS, ShadCN.
+- **Backend**: Express.js.
+- **Database**: MongoDB.
+- **Hosting**: Vercel.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture
 
-## Deploy on Vercel
+- **Frontend Layer**: Next.js for routing, state management, and components.
+- **Backend Layer**: Express.js for API routing, authentication, and middleware.
+- **Database Layer**: MongoDB with Mongoose for data management.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## API Endpoints
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Posts (`/api/feed`)
+- **GET /get-by-category**: Fetch posts by category.
+- **GET /get-post**: Retrieve a single post.
+- **POST /vote-post**: Upvote or downvote a post.
+- **DELETE /delete-post**: Remove a post.
+
+### Comments (`/api/comments`)
+- **POST /add**: Add a comment.
+- **DELETE /delete**: Remove a comment.
+- **GET /get-comments-for-post**: Retrieve comments for a post.
+
+### User Authentication (`/api/auth`)
+- **POST /create-user**: Register a new user.
+- **POST /send-otp**: Send OTP for email verification.
+- **POST /verify-otp**: Verify OTP for login.
+
+## Security Measures
+
+- **Authentication**: JWT tokens for secure sessions.
+- **Password Protection**: Bcrypt for hashing user passwords.
+- **Data Validation**: Client-side and server-side checks for data integrity.
+
+## Roles and Permissions
+
+- **Super Admin**: Full platform control, including adding colleges.
+- **College Admins**: Manage posts and clubs for specific universities.
+- **Club Admins**: Post updates about college events.
+- **Students**: Interact with posts anonymously.
+
+## Developers
+
+- **Sahil Poonia**: Full-stack Developer
+  - Responsibilities: Frontend design, backend API routes, and platform security.
+- **Utsav Singh**: Backend Developer
+  - Responsibilities: Database models, authentication, and scalability.
+
+## How to Run
+
+1. Clone the repository.
+2. Install dependencies:
+   ```bash
+   npm install
+
