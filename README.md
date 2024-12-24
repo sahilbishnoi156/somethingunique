@@ -42,6 +42,7 @@ A dedicated platform for college students to interact, share, and collaborate wi
 
 ### Helping Tools
 - **Thunderclient**
+- **Excalidraw**
 
 ## Architecture
 
@@ -95,9 +96,9 @@ A dedicated platform for college students to interact, share, and collaborate wi
          git clone https://github.com/sahilbishnoi156/somethingunique.git
       ```
     2. Backend:
-       ```bash
-         still in progressing will update soon
-       ```
+       ***
+         Still in progress, will update soon
+       ***
 3. Install dependencies:
   ```bash
     npm install
