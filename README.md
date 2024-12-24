@@ -96,11 +96,15 @@ A dedicated platform for college students to interact, share, and collaborate wi
   ```bash
     npm install
   ```
-3. Run the development server:
+3. Run the backen server:
   ```bash
     npm run dev
   ```
-4. Visit http://localhost:3000 in your browser.
+4. Run the frontend server:
+  ```
+    npm start
+  ```
+5. Visit http://localhost:3000 in your browser.
 
 ## Folder Structure 
 ```
