@@ -27,10 +27,23 @@ A dedicated platform for college students to interact, share, and collaborate wi
 
 ## Technology Stack
 
-- **Frontend**: Next.js, Tailwind CSS, ShadCN.
-- **Backend**: Express.js.
-- **Database**: MongoDB.
-- **Hosting**: Vercel.
+### Frontend Tech
+- **React**
+- **React Router**
+- **Tailwind CSS**
+- **Framer Motion**
+
+### Backend Tech
+- **Node.js**
+- **Express.js**
+- **MongoDB**
+- **Mongoose**
+- **Bcrypt**
+- **JWT**
+- **Multer**
+
+### Tools
+- **Postman**
 
 ## Architecture
 
@@ -80,6 +93,57 @@ A dedicated platform for college students to interact, share, and collaborate wi
 
 1. Clone the repository.
 2. Install dependencies:
-   ```bash
-   npm install
+  ```bash
+    npm install
+  ```
+3. Run the development server:
+  ```bash
+    npm run dev
+  ```
+4. Visit http://localhost:3000 in your browser.
 
+## Folder Structure 
+```
+SomethingUnique/
+├── frontend/             
+│   ├── public/           # Static assets like images and public files
+│   └── src/
+│       ├── assets/       # Fonts, images, and other asset files
+│       ├── components/   # Reusable UI components
+│       ├── context/      # Context API for state management
+│       ├── pages/        # Next.js pages structure
+│       │   ├── feed/     # Forum and post-related pages
+│       │   ├── login/    # User login and authentication
+│       │   ├── profile/  # Profile-related pages
+│       │   ├── register/ # Registration pages
+│       │   ├── settings/ # Settings pages
+│       └── utils/        # Helper functions and utilities
+│
+├── backend/              
+│   ├── middleware/       # Middleware for request validation and authentication
+│   ├── models/           # Database models (e.g., User, Post)
+│   ├── routes/           # API routes for authentication, posts, comments, etc.
+│   ├── services/         # Business logic and services
+│   └── utils/            # Helper utilities for the backend
+│
+└── shared/               # Shared resources
+    ├── constants/        # Shared constants between frontend and backend
+    ├── types/            # Type definitions for TypeScript (if applicable)
+    └── docs/             # Documentation files (e.g., design document, README)
+```
+
+## Future Scope
+
+### Features
+- Real-time updates using mail services.
+- Notifications and customer service using Socket.IO.
+- Separate organization accounts for direct brand connections.
+
+### Technology
+- **Socket.IO** for direct communication.
+- Mail services like **Nodemailer**.
+- **MySQL** database for extended functionality.
+
+
+### License
+This project is licensed under the MIT License. Contributions are welcome!
