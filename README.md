@@ -100,7 +100,7 @@ A dedicated platform for college students to interact, share, and collaborate wi
   ```bash
     npm run dev
   ```
-4. Run the frontend server:
+4. Run the frontend :
   ```
     npm start
   ```
