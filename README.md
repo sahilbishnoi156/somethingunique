@@ -28,22 +28,20 @@ A dedicated platform for college students to interact, share, and collaborate wi
 ## Technology Stack
 
 ### Frontend Tech
-- **React**
-- **React Router**
+- **Nextjs**
 - **Tailwind CSS**
-- **Framer Motion**
+- **ShadCn**
+- **Sonner**
 
 ### Backend Tech
-- **Node.js**
 - **Express.js**
-- **MongoDB**
 - **Mongoose**
-- **Bcrypt**
-- **JWT**
-- **Multer**
+- **Bcryptjs**
+- **Jsonwebtoken**
+- **Nodemailer**
 
-### Tools
-- **Postman**
+### Helping Tools
+- **Thunderclient**
 
 ## Architecture
 
@@ -72,7 +70,7 @@ A dedicated platform for college students to interact, share, and collaborate wi
 ## Security Measures
 
 - **Authentication**: JWT tokens for secure sessions.
-- **Password Protection**: Bcrypt for hashing user passwords.
+- **Password Protection**: Bcryptjs for hashing user passwords.
 - **Data Validation**: Client-side and server-side checks for data integrity.
 
 ## Roles and Permissions
@@ -91,20 +89,42 @@ A dedicated platform for college students to interact, share, and collaborate wi
 
 ## How to Run
 
-1. Clone the repository.
-2. Install dependencies:
+1. Clone the repositories:
+   1. Frontend:
+      ```bash
+         git clone https://github.com/sahilbishnoi156/somethingunique.git
+      ```
+    2. Backend:
+       ```bash
+         still in progressing will update soon
+       ```
+3. Install dependencies:
   ```bash
     npm install
   ```
-3. Run the backen server:
-  ```bash
-    npm run dev
-  ```
-4. Run the frontend :
-  ```
-    npm start
-  ```
-5. Visit http://localhost:3000 in your browser.
+3. Backend Scrips:
+   1. Start the express server using nodemon :
+      ```bash
+        npm run start
+      ```
+    2. Start the express server without using nodemon :
+       ```bash
+         node ./index.js
+       ```
+4. Frontend Scripts:
+   1. Start in development mode : 
+      ```bash
+        npm run dev
+      ```
+    2. Build the project :
+       ```bash
+         npm run build
+       ```
+    3. Start the build :
+       ```bash
+         npm run start
+       ```
+6. Visit http://localhost:3000 in your browser.
 
 ## Folder Structure 
 ```
@@ -112,42 +132,30 @@ SomethingUnique/
 ├── frontend/             
 │   ├── public/           # Static assets like images and public files
 │   └── src/
-│       ├── assets/       # Fonts, images, and other asset files
 │       ├── components/   # Reusable UI components
-│       ├── context/      # Context API for state management
-│       ├── pages/        # Next.js pages structure
-│       │   ├── feed/     # Forum and post-related pages
+│       ├── constants/    # Reusable constant variables 
+│       ├── app/          # Next.js route structure
+│       │   ├── app/      # Main app where posts will be shown
 │       │   ├── login/    # User login and authentication
 │       │   ├── profile/  # Profile-related pages
 │       │   ├── register/ # Registration pages
 │       │   ├── settings/ # Settings pages
-│       └── utils/        # Helper functions and utilities
+│       │   ├── lib/      # Helper functions and utilities
+│       └── types/        # Type for arguments and variables (For TypeScript)
 │
 ├── backend/              
-│   ├── middleware/       # Middleware for request validation and authentication
-│   ├── models/           # Database models (e.g., User, Post)
-│   ├── routes/           # API routes for authentication, posts, comments, etc.
-│   ├── services/         # Business logic and services
-│   └── utils/            # Helper utilities for the backend
-│
-└── shared/               # Shared resources
-    ├── constants/        # Shared constants between frontend and backend
-    ├── types/            # Type definitions for TypeScript (if applicable)
-    └── docs/             # Documentation files (e.g., design document, README)
+    ├── middleware/       # Middleware for request validation and authentication
+    ├── models/           # Database models (e.g., User, Post)
+    ├── routes/           # API routes for authentication, posts, comments, etc.
+    └── utils/            # Helper utilities for the backend
 ```
 
 ## Future Scope
 
 ### Features
-- Real-time updates using mail services.
+- Real-time video calls using webrtc.
 - Notifications and customer service using Socket.IO.
-- Separate organization accounts for direct brand connections.
 
 ### Technology
 - **Socket.IO** for direct communication.
-- Mail services like **Nodemailer**.
 - **MySQL** database for extended functionality.
-
-
-### License
-This project is licensed under the MIT License. Contributions are welcome!
