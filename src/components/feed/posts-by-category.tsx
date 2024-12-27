@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/app/store/store';
 import { setPosts } from '@/app/store/view-slice';
 import { toast } from 'sonner';
+import { PostType } from '@/types/feed.types';
 
 export default function PostByCategory({
     category,
@@ -19,6 +20,7 @@ export default function PostByCategory({
     category: PostCategory;
 }) {
     const { posts } = useSelector((state: RootState) => state.view);
+    const [currPosts, setCurrPosts] = useState<PostType[]>([]);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<null | {
@@ -32,14 +34,13 @@ export default function PostByCategory({
     const user = parseJwt(token).user;
 
     useEffect(() => {
-        const controller = new AbortController(); //For AbortController
         const fetchData = async () => {
             setIsLoading(true);
             setError(null);
             try {
                 const response = await customFetch(
                     `/feed/get-by-category?category=${category}`,
-                    { method: 'GET', signal: controller.signal } //Added signal
+                    { method: 'GET' } //Added signal
                 );
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -50,9 +51,9 @@ export default function PostByCategory({
                     );
                 }
                 const { data: fetchedPosts } = await response.json();
-                const newArray = fetchedPosts.reverse();
-                dispatch(setPosts(newArray));
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const newPosts = fetchedPosts.reverse();
+                setCurrPosts(newPosts);
+                dispatch(setPosts(newPosts));
             } catch (error) {
                 if (error instanceof Error) {
                     if (error.name !== 'AbortError') {
@@ -67,8 +68,6 @@ export default function PostByCategory({
         };
 
         fetchData();
-
-        return () => controller.abort(); // Clean up on unmount
     }, [category, dispatch]);
 
     if (isLoading) {
@@ -85,7 +84,7 @@ export default function PostByCategory({
     const NO_POST_MESSAGE = getRandomElement(NO_POST_MESSAGES);
     return (
         <div className="divide-y">
-            {posts.length === 0 ? (
+            {currPosts.length === 0 ? (
                 <div className="text-center p-8 ">
                     <p className="text-2xl font-semibold mb-4 ">
                         {NO_POST_MESSAGE}
@@ -102,7 +101,7 @@ export default function PostByCategory({
                     />
                 </div>
             ) : (
-                posts.map((post) => (
+                currPosts.map((post) => (
                     <PostItem
                         key={post._id}
                         post={post}

@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/input-otp';
 import Link from 'next/link';
 import Loader from '../loader';
+import { customFetch } from '@/lib/custom-fetch';
 
 type StudentEmailVerificationProps = {
     email: string;
@@ -71,13 +72,10 @@ export default function StudentEmailVerification({
             new Promise(async (resolve, reject) => {
                 // Make the API call
                 try {
-                    const response = await fetch(
-                        `http://localhost:5000/api/auth/verify-otp?type=${type}`,
+                    const response = await customFetch(
+                        `/auth/verify-otp?type=${type}`,
                         {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
                             body: JSON.stringify({
                                 email,
                                 otp,
