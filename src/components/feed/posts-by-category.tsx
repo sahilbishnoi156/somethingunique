@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/app/store/store';
 import { setPosts } from '@/app/store/view-slice';
 import { toast } from 'sonner';
-import { PostType } from '@/types/feed.types';
 
 export default function PostByCategory({
     category,
@@ -20,7 +19,6 @@ export default function PostByCategory({
     category: PostCategory;
 }) {
     const { posts } = useSelector((state: RootState) => state.view);
-    const [currPosts, setCurrPosts] = useState<PostType[]>([]);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<null | {
@@ -52,7 +50,6 @@ export default function PostByCategory({
                 }
                 const { data: fetchedPosts } = await response.json();
                 const newPosts = fetchedPosts.reverse();
-                setCurrPosts(newPosts);
                 dispatch(setPosts(newPosts));
             } catch (error) {
                 if (error instanceof Error) {
@@ -84,7 +81,7 @@ export default function PostByCategory({
     const NO_POST_MESSAGE = getRandomElement(NO_POST_MESSAGES);
     return (
         <div className="divide-y">
-            {currPosts.length === 0 ? (
+            {posts.length === 0 ? (
                 <div className="text-center p-8 ">
                     <p className="text-2xl font-semibold mb-4 ">
                         {NO_POST_MESSAGE}
@@ -101,7 +98,7 @@ export default function PostByCategory({
                     />
                 </div>
             ) : (
-                currPosts.map((post) => (
+                posts.map((post) => (
                     <PostItem
                         key={post._id}
                         post={post}

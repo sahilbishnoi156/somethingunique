@@ -44,7 +44,7 @@ export const viewSlice = createSlice({
             state.viewType = 'showSearch';
         },
         setPosts: (state, action: PayloadAction<PostType[]>) => {
-            state.posts = [...action.payload, ...state.posts];
+            state.posts = action.payload;
         },
     },
 });

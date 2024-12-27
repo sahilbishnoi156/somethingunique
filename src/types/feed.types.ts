@@ -10,16 +10,16 @@ export type PostType = {
     userVote: VoteType | null;
     college_id: CollageType;
     is_approved: boolean;
-    attachments: [
-        {
-            url: string;
-            type: 'video' | 'image';
-        }
-    ];
+    attachments: AttachmentType[];
     createdAt: string;
     updatedAt: string;
 };
 
+export type AttachmentType = {
+    url: string;
+    type: 'image' | 'video';
+    _id?: string;
+};
 export type UserType = {
     _id: string;
     username: string;

@@ -4,12 +4,13 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { RocketIcon, XCircleIcon } from 'lucide-react';
 import { Button } from '../ui/button';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { resetView, setPosts } from '@/app/store/view-slice';
 import { customFetch } from '@/lib/custom-fetch';
 import Image from 'next/image';
 import { toast } from 'sonner';
 import Loader from '../loader';
+import { RootState } from '@/app/store/store';
 
 export default function CreatePost() {
     const searchParams = useSearchParams();
@@ -51,6 +52,8 @@ export default function CreatePost() {
             setAttachments((prev) => [...prev, ...validFiles]);
         }
     };
+
+    const { posts } = useSelector((state: RootState) => state.view);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -119,7 +122,7 @@ export default function CreatePost() {
                 const data = await response.json();
                 toast.success('Post created successfully!');
                 dispatch(resetView());
-                dispatch(setPosts([data.data]));
+                dispatch(setPosts([data.data, ...posts]));
             } else {
                 const errorData = await response.json();
                 throw new Error(

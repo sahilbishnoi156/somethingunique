@@ -17,6 +17,7 @@ import { showComments } from '@/app/store/view-slice';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import Loader from '../loader';
+import MainCarousel from '../Carousel';
 
 export default function PostItem({
     post,
@@ -25,10 +26,8 @@ export default function PostItem({
     post: PostType;
     userId: string;
 }) {
-    const [expandedAttachment, setExpandedAttachment] = useState<{
-        type: 'image' | 'video';
-        url: string;
-    }>();
+    const [expandedAttachmentIndex, setExpandedAttachmentIndex] =
+        useState<number>();
     const [userVote, setUserVote] = useState<
         null | 'upvote' | 'downvote'
     >(null);
@@ -59,7 +58,7 @@ export default function PostItem({
                             key={index}
                             className="relative aspect-square cursor-pointer overflow-hidden rounded-lg hover:opacity-90"
                             onClick={() =>
-                                setExpandedAttachment(attachment)
+                                setExpandedAttachmentIndex(index)
                             }
                         >
                             <Image
@@ -74,7 +73,12 @@ export default function PostItem({
                             />
 
                             {index === 3 && count > 4 && (
-                                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                <div
+                                    onClick={() => {
+                                        setExpandedAttachmentIndex(3);
+                                    }}
+                                    className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+                                >
                                     <span className="text-white text-2xl font-bold">
                                         +{count - 4}
                                     </span>
@@ -86,7 +90,7 @@ export default function PostItem({
                             key={index}
                             className="relative aspect-square cursor-pointer overflow-hidden rounded-lg hover:opacity-90"
                             onClick={() =>
-                                setExpandedAttachment(attachment)
+                                setExpandedAttachmentIndex(index)
                             }
                         >
                             <video
@@ -98,7 +102,12 @@ export default function PostItem({
                                 className="rounded-lg h-full w-full object-cover"
                             />
                             {index === 3 && count > 4 && (
-                                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                <div
+                                    onClick={() => {
+                                        setExpandedAttachmentIndex(3);
+                                    }}
+                                    className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+                                >
                                     <span className="text-white text-2xl font-bold">
                                         +{count - 4}
                                     </span>
@@ -524,43 +533,17 @@ export default function PostItem({
                 </div>
             </div>
 
-            {expandedAttachment && (
-                <div
-                    className="fixed inset-0 p-4 h-screen w-screen bg-black bg-opacity-80 flex items-center justify-center z-50"
-                    onClick={() => setExpandedAttachment(undefined)}
-                >
-                    {expandedAttachment.type === 'image' ? (
-                        <div className="relative max-w-full max-h-full">
-                            <Image
-                                src={
-                                    expandedAttachment.url ||
-                                    '/placeholder.svg'
-                                }
-                                alt={expandedAttachment.url}
-                                layout="intrinsic" // Use intrinsic layout to keep the original aspect ratio
-                                height={500} // Set a fixed height to prevent the image from taking up the entire screen
-                                width={500} // Set a fixed width to prevent the image from taking up the entire screen
-                                objectFit="contain" // Keep the original aspect ratio of the image
-                                className="rounded-lg"
-                            />
-                        </div>
-                    ) : (
-                        <div className="relative max-w-full max-h-full">
-                            <video
-                                src={
-                                    expandedAttachment.url ||
-                                    '/placeholder.svg'
-                                }
-                                controls
-                                className="rounded-lg h-full w-full object-cover"
-                            />
-                        </div>
-                    )}
+            {expandedAttachmentIndex !== undefined && (
+                <div className="fixed inset-0 p-4 h-screen w-screen bg-black bg-opacity-80 flex items-center justify-center z-50">
+                    <MainCarousel
+                        attachments={post.attachments}
+                        c_index={expandedAttachmentIndex}
+                    />
                     <Button
                         size={'icon'}
                         className="absolute top-4 right-4"
                         onClick={() =>
-                            setExpandedAttachment(undefined)
+                            setExpandedAttachmentIndex(undefined)
                         }
                     >
                         ✕
