@@ -24,7 +24,7 @@ export default function PostByCategory({
     const [error, setError] = useState<null | {
         message: string;
         name: string;
-    }>(null); // Add error state
+    }>(null);
     const token = localStorage.getItem('authToken');
     if (!token) {
         redirect('/login');
@@ -38,7 +38,7 @@ export default function PostByCategory({
             try {
                 const response = await customFetch(
                     `/feed/get-by-category?category=${category}`,
-                    { method: 'GET' } //Added signal
+                    { method: 'GET' }
                 );
                 if (!response.ok) {
                     const errorData = await response.json();

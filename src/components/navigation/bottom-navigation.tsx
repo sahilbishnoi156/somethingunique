@@ -10,8 +10,14 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '../ui/button';
 import { ChevronsUp } from 'lucide-react';
+import { JwtPayload } from '@/types/auth.types';
+import { AdminButton } from './admin-button';
 
-export default function BottomNavigation() {
+export default function BottomNavigation({
+    payload,
+}: {
+    payload: JwtPayload;
+}) {
     return (
         <>
             <div className="hidden sm:flex items-center justify-start p-3 px-10 gap-3">
@@ -23,6 +29,7 @@ export default function BottomNavigation() {
                     )
                 )}
                 <CreatePostButton />
+                <AdminButton role={payload.user?.role} />
             </div>
             <div className="sm:hidden flex items-center justify-start gap-3 ">
                 <DropdownMenu>
@@ -50,6 +57,7 @@ export default function BottomNavigation() {
                             )
                         )}
                         <CreatePostButton />
+                        <AdminButton role={payload.user?.role} />
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

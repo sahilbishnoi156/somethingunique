@@ -260,7 +260,7 @@ export default function PostItem({
     const dispatch = useDispatch();
 
     return (
-        <div className="my-1 hover:bg-secondary/30 duration-300 w-full rounded-xl relative">
+        <div className="my-1 hover:bg-secondary/30 duration-300 w-full relative">
             {isDeleting && (
                 <div className="absolute h-full w-full bg-black/80 flex items-center flex-col gap-5 justify-center z-50">
                     <Loader />

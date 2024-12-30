@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { RocketIcon, XCircleIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,9 +12,14 @@ import { toast } from 'sonner';
 import Loader from '../loader';
 import { RootState } from '@/app/store/store';
 
-export default function CreatePost() {
+export default function CreatePost({
+    o_category,
+}: {
+    o_category?: string;
+}) {
     const searchParams = useSearchParams();
-    const category = searchParams.get('type') || 'forum';
+    const category =
+        searchParams.get('type') || o_category || 'forum';
     const dispatch = useDispatch();
     const [isUploading, setIsUploading] = useState(false);
 
@@ -151,10 +156,14 @@ export default function CreatePost() {
                 return '🔍 Lost Something? Found Something? Share Here!';
             case 'confession':
                 return '🤫 Spill the Tea in Confessions!';
+            case 'event':
+                return 'Post an Event!';
             default:
                 return '📝 Create a New Post';
         }
     };
+    const pathname = usePathname();
+    const regex = /^\/clubs\/[^/]+$/;
 
     return (
         <div className="h-full w-full flex flex-col justify-between p-4 relative">
@@ -258,16 +267,18 @@ export default function CreatePost() {
                 </div>
             )}
             <div className="flex justify-end items-center mt-4 gap-2">
-                <Button
-                    type="button"
-                    variant={'destructive'}
-                    disabled={isUploading}
-                    className="text-lg"
-                    onClick={() => dispatch(resetView())}
-                >
-                    <XCircleIcon className=" h-5 w-5 inline-block" />{' '}
-                    Close
-                </Button>
+                {!regex.test(pathname) && (
+                    <Button
+                        type="button"
+                        variant={'destructive'}
+                        disabled={isUploading}
+                        className="text-lg"
+                        onClick={() => dispatch(resetView())}
+                    >
+                        <XCircleIcon className=" h-5 w-5 inline-block" />{' '}
+                        Close
+                    </Button>
+                )}
                 <Button
                     type="submit"
                     onClick={handleSubmit}

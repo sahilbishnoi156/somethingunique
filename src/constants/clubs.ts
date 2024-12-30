@@ -1,4 +1,3 @@
-export const CLUBS = ['ACM', 'GFG', 'Coding Ninjas', 'Ceed'];
 export const CLUB_COLORS = [
     'rgb(210, 245, 240)',
     'rgb(255, 235, 200)',

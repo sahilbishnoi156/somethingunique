@@ -11,12 +11,14 @@ interface ViewState {
         | 'showSearch';
     postId: string | null; // To store the post ID for showing comments
     posts: PostType[];
+    isEventPost: boolean;
 }
 
 const initialState: ViewState = {
     viewType: 'default',
     postId: null,
     posts: [],
+    isEventPost: false,
 };
 
 export const viewSlice = createSlice({
@@ -46,6 +48,9 @@ export const viewSlice = createSlice({
         setPosts: (state, action: PayloadAction<PostType[]>) => {
             state.posts = action.payload;
         },
+        toggleEventPostBar: (state) => {
+            state.isEventPost = !state.isEventPost;
+        },
     },
 });
 
@@ -55,6 +60,7 @@ export const {
     resetView,
     setPosts,
     showSearch,
+    toggleEventPostBar,
 } = viewSlice.actions;
 
 export default viewSlice.reducer;

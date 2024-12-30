@@ -7,6 +7,7 @@ import { LogOut } from 'lucide-react';
 export default function LogoutButton({
     children,
     variant,
+    className,
 }: {
     variant?:
         | 'default'
@@ -18,6 +19,7 @@ export default function LogoutButton({
         | null
         | undefined;
     children?: React.ReactNode;
+    className?: string;
 }) {
     const router = useRouter();
     return (
@@ -28,9 +30,10 @@ export default function LogoutButton({
                 localStorage.removeItem('authToken');
                 router.refresh();
             }}
+            className={className}
         >
-            {children}
             <LogOut />
+            {children}
         </Button>
     );
 }
