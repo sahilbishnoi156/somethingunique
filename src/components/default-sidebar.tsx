@@ -1,6 +1,5 @@
 'use client';
 import React from 'react';
-import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { redirect } from 'next/navigation';
 import { parseJwt } from '@/lib/jwt';
@@ -13,6 +12,7 @@ import { CLUB_COLORS } from '@/constants/clubs';
 import { getRandomElement } from '@/lib/random-item';
 import { Badge } from './ui/badge';
 import { JwtPayload } from '@/types/auth.types';
+import { Search } from 'lucide-react';
 
 export default function DefaultSidebar() {
     const [payload, setPayload] = React.useState<JwtPayload>();
@@ -47,23 +47,14 @@ export default function DefaultSidebar() {
     const dispatch = useDispatch();
     return (
         <div className="p-6">
-            <h2 className="font-semibold text-xl">Filters</h2>
             <div className="space-y-3 flex flex-col mt-5 ">
-                <Button
-                    variant={'secondary'}
-                    size={'lg'}
-                    className="text-lg"
-                >
-                    Trending
-                </Button>
-                <Button
-                    variant={'secondary'}
-                    size={'lg'}
-                    className="text-lg"
+                <div
+                    className="text-xl bg-secondary p-3 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-secondary/80"
                     onClick={() => dispatch(showSearch())}
                 >
+                    <Search className="h-5 w-5" />
                     Search
-                </Button>
+                </div>
             </div>
             <h2 className="font-semibold text-xl mt-10">Profile</h2>
             <div className="flex items-center gap-2 mt-4">
