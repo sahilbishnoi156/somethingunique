@@ -12,13 +12,19 @@ import { customFetch } from '@/lib/custom-fetch';
 import { CLUB_COLORS } from '@/constants/clubs';
 import { getRandomElement } from '@/lib/random-item';
 import { Badge } from './ui/badge';
+import { JwtPayload } from '@/types/auth.types';
 
 export default function DefaultSidebar() {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        redirect('/login');
-    }
-    const user = parseJwt(token).user;
+    const [payload, setPayload] = React.useState<JwtPayload>();
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        if (!token) {
+            redirect('/register');
+        } else {
+            const data = parseJwt(token);
+            setPayload(data);
+        }
+    }, []);
     const [clubs, setClubs] = React.useState<ClubType[]>([]);
 
     React.useEffect(() => {
@@ -64,13 +70,15 @@ export default function DefaultSidebar() {
                 <Avatar>
                     <AvatarImage
                         src={
-                            user?.username ||
+                            payload?.user?.username ||
                             `/placeholder.svg?height=40&width=40`
                         }
-                        alt={user.username}
+                        alt={payload?.user.username}
                     />
                     <AvatarFallback>
-                        {user?.username?.slice(0, 2).toUpperCase()}
+                        {payload?.user?.username
+                            ?.slice(0, 2)
+                            .toUpperCase()}
                     </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
@@ -79,7 +87,7 @@ export default function DefaultSidebar() {
                         className="hover:underline cursor-pointer"
                     >
                         <div className="text-lg font-medium">
-                            @{user.username}
+                            @{payload?.user.username}
                         </div>
                     </Link>
                 </div>

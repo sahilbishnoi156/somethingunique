@@ -16,7 +16,7 @@ import { AdminButton } from './admin-button';
 export default function BottomNavigation({
     payload,
 }: {
-    payload: JwtPayload;
+    payload?: JwtPayload;
 }) {
     return (
         <>
@@ -29,7 +29,7 @@ export default function BottomNavigation({
                     )
                 )}
                 <CreatePostButton />
-                <AdminButton role={payload.user?.role} />
+                <AdminButton role={payload?.user?.role} />
             </div>
             <div className="sm:hidden flex items-center justify-start gap-3 ">
                 <DropdownMenu>
@@ -57,7 +57,7 @@ export default function BottomNavigation({
                             )
                         )}
                         <CreatePostButton />
-                        <AdminButton role={payload.user?.role} />
+                        <AdminButton role={payload?.user?.role} />
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

@@ -12,7 +12,13 @@ import React from 'react';
 const LandingPage = () => {
     const HEADING = getRandomElement(LANDING_PAGE_HEADING);
     const DESCRIPTION = getRandomElement(LANDING_PAGE_DESCRIPTION);
-    const token = localStorage.getItem('authToken');
+    const [authToken, setAuthToken] = React.useState<null | string>(
+        null
+    );
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        setAuthToken(token);
+    }, []);
 
     return (
         <div className="h-screen w-screen flex flex-col justify-between items-center p-6">
@@ -27,7 +33,7 @@ const LandingPage = () => {
                     {DESCRIPTION}
                 </p>
                 <div className="mt-10 flex gap-5 w-1/2">
-                    {token ? (
+                    {authToken ? (
                         <Link href={'/app'} className="w-full">
                             <Button
                                 className="w-full text-lg"

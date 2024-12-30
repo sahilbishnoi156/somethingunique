@@ -26,8 +26,8 @@ export default function LogoutButton({
         <Button
             variant={variant || 'secondary'}
             onClick={() => {
-                localStorage.removeItem('dummyAuthToken');
-                localStorage.removeItem('authToken');
+                window?.localStorage.removeItem('dummyAuthToken');
+                window?.localStorage.removeItem('authToken');
                 router.refresh();
             }}
             className={className}

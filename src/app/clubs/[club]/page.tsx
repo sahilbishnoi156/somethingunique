@@ -6,6 +6,7 @@ import Loader from '@/components/loader';
 import BottomNavigation from '@/components/navigation/bottom-navigation';
 import { customFetch } from '@/lib/custom-fetch';
 import { parseJwt } from '@/lib/jwt';
+import { JwtPayload } from '@/types/auth.types';
 import { ClubType, PostType } from '@/types/feed.types';
 import Image from 'next/image';
 import { redirect, useParams } from 'next/navigation';
@@ -23,11 +24,17 @@ export default function Club() {
         (state: RootState) => state.view
     );
 
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        redirect('/login');
-    }
-    const user = parseJwt(token).user;
+    const [payload, setPayload] = React.useState<JwtPayload>();
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        if (!token) {
+            redirect('/register');
+        } else {
+            const data = parseJwt(token);
+            setPayload(data);
+        }
+    }, []);
+    const isClubAdmin = payload?.user?.id === currClub?.admin;
 
     const [invalidClub, setInvalidClub] = React.useState(false);
 
@@ -66,13 +73,6 @@ export default function Club() {
         fetchData();
     }, [club]);
 
-    const authToken = localStorage?.getItem('authToken');
-    if (!authToken) {
-        redirect('/register');
-    }
-    const payload = parseJwt(authToken);
-    const isClubAdmin = payload?.user?.id === currClub?.admin;
-
     if (isLoading) {
         return (
             <div className="absolute inset-0 h-screen w-screen flex items-center justify-center">
@@ -84,7 +84,7 @@ export default function Club() {
         return (
             <div className="text-center p-8 ">
                 <p className="text-2xl font-semibold mb-4 ">
-                    Oops! Looks like this club doesn't exist
+                    Oops! Looks like this club doesn&apos;t exist
                 </p>
                 <Image
                     alt="Club not found"
@@ -131,7 +131,7 @@ export default function Club() {
                                 <PostItem
                                     key={post._id}
                                     post={post}
-                                    userId={user?.id || ''}
+                                    userId={payload?.user?.id || ''}
                                 />
                             ))
                         )}

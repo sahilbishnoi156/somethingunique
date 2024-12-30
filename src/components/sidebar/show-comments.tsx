@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/avatar';
 import moment from 'moment';
 import Link from 'next/link';
+import { JwtPayload } from '@/types/auth.types';
 
 const Comments = ({ postId }: { postId: string | null }) => {
     const dispatch = useDispatch();
@@ -33,11 +34,16 @@ const Comments = ({ postId }: { postId: string | null }) => {
     const [currPost, setCurrPost] = useState<PostType>();
     const [currUser, setCurrUser] = useState<UserType>();
 
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        redirect('/login');
-    }
-    const user = parseJwt(token).user;
+    const [payload, setPayload] = React.useState<JwtPayload>();
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        if (!token) {
+            redirect('/register');
+        } else {
+            const data = parseJwt(token);
+            setPayload(data);
+        }
+    }, []);
 
     useEffect(() => {
         if (!postId) {
@@ -219,7 +225,7 @@ const Comments = ({ postId }: { postId: string | null }) => {
                     <CardContent className="p-3 pt-0">
                         <span>{comment.content}</span>
                     </CardContent>
-                    {user.id === comment.user_id._id && (
+                    {payload?.user.id === comment.user_id._id && (
                         <CardFooter className="flex justify-end p-3">
                             <Button
                                 variant="ghost"
@@ -237,7 +243,7 @@ const Comments = ({ postId }: { postId: string | null }) => {
                 </Card>
             ));
         },
-        [handleDeleteComment, user.id]
+        [handleDeleteComment, payload]
     );
 
     if (!postId) {

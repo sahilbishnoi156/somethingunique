@@ -18,6 +18,7 @@ import { RootState } from '@/app/store/store';
 import SideBar from '@/components/sidebar/sidebar';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { JwtPayload } from '@/types/auth.types';
 
 export default function ProfilePage() {
     const [profile, setProfile] = React.useState<{
@@ -29,12 +30,17 @@ export default function ProfilePage() {
     const [urlCopied, setUrlCopied] = React.useState(false);
     const [editBio, setEditBio] = React.useState(false);
     const { username } = useParams();
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        redirect('/login');
-    }
-    const user = parseJwt(token).user;
-    const isMyProfile = user.username === username;
+    const [payload, setPayload] = React.useState<JwtPayload>();
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        if (!token) {
+            redirect('/register');
+        } else {
+            const data = parseJwt(token);
+            setPayload(data);
+        }
+    }, []);
+    const isMyProfile = payload?.user.username === username;
 
     const [userNotFound, setUserNotFound] = React.useState(false);
     React.useEffect(() => {
@@ -290,7 +296,7 @@ export default function ProfilePage() {
                                 <PostItem
                                     key={post._id}
                                     post={post}
-                                    userId={user.id || ''}
+                                    userId={payload?.user.id || ''}
                                 />
                             ))}
                         </div>

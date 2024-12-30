@@ -1,14 +1,17 @@
 'use client';
 import { redirect } from 'next/navigation';
+import React from 'react';
 
 export default function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const authToken = localStorage?.getItem('authToken');
-    if (!authToken) {
-        redirect('/register');
-    }
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        if (!token) {
+            redirect('/register');
+        }
+    }, []);
     return <div>{children}</div>;
 }

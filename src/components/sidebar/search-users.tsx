@@ -64,17 +64,11 @@ const UserSearch = () => {
                 <input
                     type="text"
                     id="user-search-input"
-                    className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600"
+                    className="peer p-4 block w-full border-gray-200 rounded-lg text-sm  focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600"
                     placeholder="Type a username..."
                     value={query}
                     onChange={handleInputChange}
                 />
-                <label
-                    htmlFor="user-search-input"
-                    className="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500"
-                >
-                    Username
-                </label>
             </div>
 
             {loading && (

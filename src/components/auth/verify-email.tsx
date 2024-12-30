@@ -86,7 +86,7 @@ export default function StudentEmailVerification({
                     if (!response.ok) {
                         throw new Error(data?.data || data?.message);
                     }
-                    localStorage.setItem(
+                    window?.localStorage.setItem(
                         type === 'register'
                             ? 'dummyAuthToken'
                             : 'authToken',

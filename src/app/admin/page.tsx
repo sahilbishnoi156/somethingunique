@@ -22,7 +22,6 @@ import {
     SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { customFetch } from '@/lib/custom-fetch';
-import { parseJwt } from '@/lib/jwt';
 import { UserType } from '@/types/feed.types';
 import {
     Building2,

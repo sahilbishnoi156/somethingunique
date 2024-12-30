@@ -89,13 +89,7 @@ export function CreateCollegeDialog({
             setGeneratedKey(null); // Reset key if any field is missing
             form.setValue('key', ''); // Reset form key value
         }
-    }, [
-        form.getValues().name,
-        form.getValues().city,
-        form.getValues().state,
-        form.getValues().country,
-        form,
-    ]);
+    }, [form]);
 
     const onSubmit = async (values: CollegeFormValues) => {
         try {

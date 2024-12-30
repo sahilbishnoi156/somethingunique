@@ -112,8 +112,11 @@ export default function CreateUsername({
                         'Houston, we have a problem!'
                 );
             }
-            localStorage.setItem('authToken', data?.data?.authToken);
-            localStorage.removeItem('dummyAuthToken');
+            window?.localStorage.setItem(
+                'authToken',
+                data?.data?.authToken
+            );
+            window?.localStorage.removeItem('dummyAuthToken');
 
             toast.success(
                 "Boom! You're in! Time to rock this digital world! 🚀"
@@ -156,7 +159,10 @@ export default function CreateUsername({
             toast.success(
                 'Username updated successfully! Time to show off!'
             );
-            localStorage.setItem('authToken', data?.data?.authToken);
+            window?.localStorage.setItem(
+                'authToken',
+                data?.data?.authToken
+            );
             setTimeout(() => {
                 router.push('/profile');
                 setIsProcessing(false);

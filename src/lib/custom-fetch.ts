@@ -17,7 +17,7 @@ export const customFetch = async (
         headers: {
             'Content-Type': 'application/json',
             ...options.headers,
-            Authorization: `Bearer ${localStorage.getItem(
+            Authorization: `Bearer ${window?.localStorage.getItem(
                 'authToken'
             )}`,
         },
@@ -26,7 +26,7 @@ export const customFetch = async (
     });
     if (response.status === 419) {
         setTimeout(() => {
-            localStorage.removeItem('authToken');
+            window?.localStorage.removeItem('authToken');
             window.location.href = '/login';
         }, 2000);
         toast.error('Session expired. Please login again.');

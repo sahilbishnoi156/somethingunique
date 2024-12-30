@@ -9,21 +9,30 @@ export default function Register() {
     const [email, setEmail] = React.useState<string>('');
 
     // check if user is already authenticated
-    const authToken = localStorage.getItem('authToken');
-    if (authToken) {
-        redirect('/app');
-    }
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        if (token) {
+            redirect('/app');
+        }
+    }, []);
 
-    const dummyAuthToken = localStorage.getItem('dummyAuthToken');
+    const [dummyAuthToken, setDummyAuthToken] =
+        React.useState<string>();
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('dummyAuthToken');
+        if (token) {
+            setDummyAuthToken(token);
+        }
+    }, []);
 
     if (dummyAuthToken) {
         if (isJwtExpired(dummyAuthToken)) {
-            localStorage.removeItem('dummyAuthToken');
+            window?.localStorage.removeItem('dummyAuthToken');
             redirect('/app');
         } else {
             const payload = parseJwt(dummyAuthToken);
             if (!payload?.user?.email) {
-                localStorage.removeItem('dummyAuthToken');
+                window?.localStorage.removeItem('dummyAuthToken');
                 redirect('/app');
             } else {
                 return (

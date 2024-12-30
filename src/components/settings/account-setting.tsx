@@ -5,16 +5,23 @@ import { redirect, useRouter } from 'next/navigation';
 import { parseJwt } from '@/lib/jwt';
 import { customFetch } from '@/lib/custom-fetch';
 import { toast } from 'sonner';
+import { JwtPayload } from '@/types/auth.types';
 
 export default function AccountSetting() {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        redirect('/login');
-    }
+    const [payload, setPayload] = React.useState<JwtPayload>();
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        if (!token) {
+            redirect('/register');
+        } else {
+            const data = parseJwt(token);
+            setPayload(data);
+        }
+    }, []);
 
     const router = useRouter();
     const [email, setEmail] = React.useState(
-        parseJwt(token).user.email || ''
+        payload?.user.email || ''
     );
     const [deleteAccountConfirmed, setDeleteAccountConfirmed] =
         React.useState(false);
@@ -29,7 +36,7 @@ export default function AccountSetting() {
                 method: 'DELETE',
             });
             if (response.ok) {
-                localStorage.removeItem('authToken');
+                window?.localStorage.removeItem('authToken');
                 toast.success('Bye bye! We will miss you.');
                 router.push('/login');
             }

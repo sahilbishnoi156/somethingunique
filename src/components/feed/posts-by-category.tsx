@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/app/store/store';
 import { setPosts } from '@/app/store/view-slice';
 import { toast } from 'sonner';
+import { JwtPayload } from '@/types/auth.types';
 
 export default function PostByCategory({
     category,
@@ -25,11 +26,16 @@ export default function PostByCategory({
         message: string;
         name: string;
     }>(null);
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        redirect('/login');
-    }
-    const user = parseJwt(token).user;
+    const [payload, setPayload] = React.useState<JwtPayload>();
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        if (!token) {
+            redirect('/login');
+        } else {
+            const data = parseJwt(token);
+            setPayload(data);
+        }
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -102,7 +108,7 @@ export default function PostByCategory({
                     <PostItem
                         key={post._id}
                         post={post}
-                        userId={user?.id || ''}
+                        userId={payload?.user?.id || ''}
                     />
                 ))
             )}
