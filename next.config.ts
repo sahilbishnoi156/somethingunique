@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
         remotePatterns: [
             { protocol: 'https', hostname: 'cdn.pixabay.com' },
             { protocol: 'http', hostname: 'localhost' },
-            { protocol: 'http', hostname: '3.108.53.40' },
+            { protocol: 'http', hostname: '13.232.78.204' },
             { protocol: 'https', hostname: 'res.cloudinary.com' },
         ],
     },

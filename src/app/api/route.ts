@@ -18,14 +18,28 @@ export const POST = async (request: NextRequest) => {
         });
     } catch (error) {
         console.error(error);
-        return new Response(
-            JSON.stringify({
-                message: 'Something went wrong',
-            }),
-            {
-                status: 500,
-                headers: { 'Content-Type': 'application/json' },
-            }
-        );
+        if (error instanceof Error) {
+            return new Response(
+                JSON.stringify({
+                    message: error.message,
+                    data: error,
+                }),
+                {
+                    status: 500,
+                    headers: { 'Content-Type': 'application/json' },
+                }
+            );
+        } else {
+            return new Response(
+                JSON.stringify({
+                    message: 'Something went wrong',
+                    data: error,
+                }),
+                {
+                    status: 500,
+                    headers: { 'Content-Type': 'application/json' },
+                }
+            );
+        }
     }
 };
