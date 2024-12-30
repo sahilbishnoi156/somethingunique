@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -26,12 +26,11 @@ import { customFetch } from '@/lib/custom-fetch';
 
 const collegeSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
-    city: z.string().min(2, 'City must be at least 2 characters'),
-    state: z.string().min(2, 'State must be at least 2 characters'),
+    city: z.string().optional(),
+    state: z.string().optional(),
     country: z
         .string()
         .min(2, 'Country must be at least 2 characters'),
-    key: z.string().min(2, 'Key must be at least 2 characters'),
 });
 
 type CollegeFormValues = z.infer<typeof collegeSchema>;
@@ -42,9 +41,7 @@ export function CreateCollegeDialog({
     setRefetch: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
     const [open, setOpen] = React.useState(false);
-    const [generatedKey, setGeneratedKey] = useState<string | null>(
-        null
-    );
+    const [isSaving, setIsSaving] = useState(false);
     const form = useForm<CollegeFormValues>({
         resolver: zodResolver(collegeSchema),
         defaultValues: {
@@ -52,46 +49,11 @@ export function CreateCollegeDialog({
             city: '',
             state: '',
             country: '',
-            key: '',
         },
     });
 
-    // Function to dynamically generate the key
-    const generateKey = (
-        name: string,
-        city: string,
-        state: string,
-        country: string
-    ) => {
-        return `${name
-            .toUpperCase()
-            .replace(/\s+/g, '')
-            .slice(0, 3)}-${city
-            .toUpperCase()
-            .slice(0, 2)
-            .replace(/\s+/g, '')}-${state
-            .toUpperCase()
-            .slice(0, 2)
-            .replace(/\s+/g, '')}-${country
-            .toUpperCase()
-            .slice(0, 2)
-            .replace(/\s+/g, '')}`;
-    };
-
-    useEffect(() => {
-        const { name, city, state, country } = form.getValues();
-        // Only generate the key if all required fields have values
-        if (name && city && state && country) {
-            const key = generateKey(name, city, state, country);
-            setGeneratedKey(key);
-            form.setValue('key', key); // Update the form key value
-        } else {
-            setGeneratedKey(null); // Reset key if any field is missing
-            form.setValue('key', ''); // Reset form key value
-        }
-    }, [form]);
-
     const onSubmit = async (values: CollegeFormValues) => {
+        setIsSaving(true);
         try {
             const response = await customFetch(
                 '/dashboard/add-college',
@@ -111,13 +73,19 @@ export function CreateCollegeDialog({
         } catch (error) {
             console.error(error);
             if (error instanceof Error) toast.error(error.message);
+        } finally {
+            setIsSaving(false);
         }
     };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" className="w-fit">
+                <Button
+                    variant="outline"
+                    size={'lg'}
+                    className="w-fit"
+                >
                     Add College
                 </Button>
             </DialogTrigger>
@@ -137,6 +105,7 @@ export function CreateCollegeDialog({
                         <FormField
                             control={form.control}
                             name="name"
+                            disabled={isSaving}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Name</FormLabel>
@@ -154,6 +123,7 @@ export function CreateCollegeDialog({
                         <FormField
                             control={form.control}
                             name="city"
+                            disabled={isSaving}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>City</FormLabel>
@@ -171,6 +141,7 @@ export function CreateCollegeDialog({
                         <FormField
                             control={form.control}
                             name="state"
+                            disabled={isSaving}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>State</FormLabel>
@@ -188,6 +159,7 @@ export function CreateCollegeDialog({
                         <FormField
                             control={form.control}
                             name="country"
+                            disabled={isSaving}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Country</FormLabel>
@@ -201,31 +173,11 @@ export function CreateCollegeDialog({
                                 </FormItem>
                             )}
                         />
-
-                        <FormField
-                            control={form.control}
-                            name="key"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Key</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Generated college key"
-                                            {...field}
-                                            disabled // Disable key field since it is generated automatically
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
                         <DialogFooter>
-                            <Button
-                                type="submit"
-                                disabled={!generatedKey}
-                            >
-                                Create College
+                            <Button type="submit" disabled={isSaving}>
+                                {isSaving
+                                    ? 'Creating...'
+                                    : 'Create College'}
                             </Button>
                         </DialogFooter>
                     </form>

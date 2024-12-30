@@ -2,10 +2,15 @@ import { NextRequest } from 'next/server';
 
 export const POST = async (request: NextRequest) => {
     try {
-        const { url, options } = await request.json();
-
+        const body = await request.json();
+        const url = request?.nextUrl?.searchParams.get('url') || '';
+        console.log(body);
         // Make the fetch request
-        const response = await fetch(url, options);
+        const response = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(body),
+        });
+
         // Read the response body as JSON
         const data = await response.json();
         console.log(data);
@@ -13,10 +18,10 @@ export const POST = async (request: NextRequest) => {
         // Return the exact same response with the same status and headers
         return new Response(JSON.stringify(data), {
             status: response.status,
-            // headers: {
-            //     'Content-Type': 'application/json',
-            //     ...Object.fromEntries(response.headers), // Optional: copy all headers from the response
-            // },
+            headers: {
+                'Content-Type': 'application/json',
+                ...Object.fromEntries(response.headers), // Optional: copy all headers from the response
+            },
         });
     } catch (error) {
         console.error(error);

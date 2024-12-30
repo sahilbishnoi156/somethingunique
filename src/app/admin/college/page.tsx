@@ -32,6 +32,7 @@ const tabTypes = ['students', 'clubs'];
 export default function Page() {
     const params = useSearchParams();
     const tab = params.get('tab');
+    const search = params.get('search');
     const [data, setData] = React.useState(null);
     const [isDataFetching, setIsDataFetching] = React.useState(false);
     const [refetch, setRefetch] = React.useState(true);
@@ -118,7 +119,20 @@ export default function Page() {
         return (
             <div className="flex flex-col gap-4 p-4 pt-0">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <Card>
+                    <Card
+                        onClick={() => {
+                            const searchQuery = new URLSearchParams(
+                                params.toString()
+                            );
+                            searchQuery.delete('search');
+                            window.history.pushState(
+                                null,
+                                '',
+                                `?${searchQuery.toString()}`
+                            );
+                        }}
+                        className="dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none"
+                    >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
                                 Total Clubs
@@ -131,7 +145,20 @@ export default function Page() {
                             </div>
                         </CardContent>
                     </Card>
-                    <Card>
+                    <Card
+                        onClick={() => {
+                            const searchQuery = new URLSearchParams(
+                                params.toString()
+                            );
+                            searchQuery.set('search', 'active');
+                            window.history.pushState(
+                                null,
+                                '',
+                                `?${searchQuery.toString()}`
+                            );
+                        }}
+                        className="dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none"
+                    >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
                                 Active Clubs
@@ -144,7 +171,20 @@ export default function Page() {
                             </div>
                         </CardContent>
                     </Card>
-                    <Card>
+                    <Card
+                        onClick={() => {
+                            const searchQuery = new URLSearchParams(
+                                params.toString()
+                            );
+                            searchQuery.set('search', 'review');
+                            window.history.pushState(
+                                null,
+                                '',
+                                `?${searchQuery.toString()}`
+                            );
+                        }}
+                        className="dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none"
+                    >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
                                 Inactive or Under Review Clubs
@@ -236,8 +276,30 @@ export default function Page() {
                                     <>
                                         <BreadcrumbSeparator className="hidden md:block" />
                                         <BreadcrumbItem>
+                                            {search ? (
+                                                <Link
+                                                    href={`/admin/college?tab=${tab}`}
+                                                >
+                                                    {tab}
+                                                </Link>
+                                            ) : (
+                                                <BreadcrumbPage>
+                                                    <Link
+                                                        href={`/admin/college?tab=${tab}`}
+                                                    >
+                                                        {tab}
+                                                    </Link>
+                                                </BreadcrumbPage>
+                                            )}
+                                        </BreadcrumbItem>
+                                    </>
+                                )}
+                                {search && (
+                                    <>
+                                        <BreadcrumbSeparator className="hidden md:block" />
+                                        <BreadcrumbItem>
                                             <BreadcrumbPage>
-                                                {tab}
+                                                {search}
                                             </BreadcrumbPage>
                                         </BreadcrumbItem>
                                     </>

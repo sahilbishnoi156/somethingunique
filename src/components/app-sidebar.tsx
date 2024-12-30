@@ -9,11 +9,14 @@ import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
+    SidebarHeader,
     SidebarRail,
+    useSidebar,
 } from '@/components/ui/sidebar';
 import { UserType } from '@/types/feed.types';
 import { customFetch } from '@/lib/custom-fetch';
 import Loader from './loader';
+import Link from 'next/link';
 
 export function AppSidebar({
     navMains,
@@ -53,6 +56,8 @@ export function AppSidebar({
         fetchData();
     }, []);
 
+    const { open } = useSidebar();
+
     return (
         <>
             {isFetching ? (
@@ -61,6 +66,14 @@ export function AppSidebar({
                 </div>
             ) : (
                 <Sidebar collapsible="icon" {...props}>
+                    <SidebarHeader>
+                        <div className="flex items-center justify-center gap-3 pt-3">
+                            <Link href={'/app'}>
+                                <Loader isLogo />
+                            </Link>
+                            {open && <p>Admin&apos;s Villa</p>}
+                        </div>
+                    </SidebarHeader>
                     <SidebarContent>
                         <NavMain items={navMains} />
                     </SidebarContent>

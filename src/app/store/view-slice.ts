@@ -35,6 +35,11 @@ export const viewSlice = createSlice({
             }
         },
         showComments: (state, action: PayloadAction<string>) => {
+            if (state.postId === action.payload) {
+                state.viewType = 'default';
+                state.postId = null;
+                return;
+            }
             state.viewType = 'showComments';
             state.postId = action.payload; // Set the post ID for the comments
         },

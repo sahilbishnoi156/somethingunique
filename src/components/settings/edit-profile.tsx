@@ -8,10 +8,11 @@ import ShowProfilePicture from './showPfp';
 
 export default function AccountSetting() {
     const [user, setUser] = React.useState<UserType>();
-    const [isFetching, setIsFetching] = React.useState(true);
+    const [isFetching, setIsFetching] = React.useState(false);
 
     React.useEffect(() => {
         const fetchData = async () => {
+            setIsFetching(true);
             try {
                 const response = await customFetch('/user/get-user', {
                     method: 'GET',
@@ -29,21 +30,25 @@ export default function AccountSetting() {
         };
         fetchData();
     }, []);
+
     if (isFetching) {
-        <div className="col-span-8 overflow-hidden rounded-xl sm:bg-secondary dark:sm:bg-secondary/30 sm:px-8 sm:shadow py-6">
-            <h1 className="text-2xl font-semibold">Epic Profile!</h1>
-            <hr className="mt-4 mb-8" />
-            <div className="w-full items-center justify-center">
-                <Loader />
+        return (
+            <div className="col-span-8 overflow-hidden rounded-xl sm:bg-secondary dark:sm:bg-secondary/30 sm:px-8 sm:shadow py-6">
+                <h1 className="text-2xl font-semibold">
+                    Epic Profile!
+                </h1>
+                <hr className="mt-4 mb-8" />
+                <div className="w-full flex items-center justify-center">
+                    <Loader />
+                </div>
             </div>
-        </div>;
+        );
     }
     return (
         <div className="col-span-8 overflow-hidden rounded-xl sm:bg-secondary dark:sm:bg-secondary/30 sm:px-8 sm:shadow py-6">
-            <h1 className="text-2xl font-semibold">Epic Profile!</h1>
+            <h1 className="text-2xl font-semibold">Epic Profile!</h1>{' '}
             <hr className="mt-4 mb-8" />
             <ShowProfilePicture user={user} />
-
             <hr className="mt-4 mb-8" />
             {/* Email Section */}
             <p className="py-2 text-xl font-semibold ">
@@ -71,7 +76,6 @@ export default function AccountSetting() {
                     <Button className="py-6">Try Mythical</Button>
                 </Link>
             </div>
-
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-1">
                 <p className="text-gray-600">
                     Not bad! Could’ve been worse... like{' '}

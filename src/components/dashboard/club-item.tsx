@@ -13,6 +13,15 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import CopyButton from '../CopyButton';
+import { useRouter } from 'next/navigation';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '../ui/tooltip';
+import { UserToopTip } from '../show-user-tooltip';
+import { DisApproveClub } from './disapprove-club';
 
 interface ClubItemProps {
     club: ClubType;
@@ -51,10 +60,14 @@ export function ClubItem({
 
     const truncatedDescription = club?.description?.slice(0, 20);
     const isDescriptionLong = club?.description?.length > 20;
+    const router = useRouter();
 
     return (
         <TableRow>
             <TableCell>{serialNumber}</TableCell>
+            <TableCell className="flex gap-1">
+                <CopyButton item={club._id || ''} />
+            </TableCell>
             <TableCell>{club.name}</TableCell>
             <TableCell>
                 {truncatedDescription}
@@ -67,33 +80,78 @@ export function ClubItem({
                     </span>
                 )}
             </TableCell>
-            <TableCell>
+            <TableCell
+                className={
+                    !club?.actionAuthorized ? 'cursor-pointer' : ''
+                }
+                onClick={() => {
+                    if (club?.actionAuthorized) return;
+                    if (typeof club.college_id === 'string') {
+                        return;
+                    } else {
+                        router.push(
+                            '/admin?tab=colleges&search=' +
+                                club.college_id.name
+                        );
+                    }
+                }}
+            >
                 {typeof club.college_id === 'string'
                     ? club.college_id
                     : (club.college_id as CollegeType)?.name}
             </TableCell>
-            <TableCell>
-                {typeof club.admin === 'string'
-                    ? club.admin
-                    : (club.admin as UserType)?.username}
+            <TableCell
+                onClick={() => {
+                    if (typeof club.admin === 'string') {
+                        return;
+                    } else {
+                        router.push(
+                            '/admin/college?tab=students&search=' +
+                                club.admin.username
+                        );
+                    }
+                }}
+                className="cursor-pointer"
+            >
+                {typeof club.admin === 'string' ? (
+                    club.admin
+                ) : (
+                    <Tooltip>
+                        <TooltipTrigger>
+                            {(club.admin as UserType)?.username}
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <UserToopTip user={club.admin} />
+                        </TooltipContent>
+                    </Tooltip>
+                )}
             </TableCell>
             <TableCell className="text-right">
                 {club?.actionAuthorized ? (
                     <>
-                        {club.status === 'review' && (
-                            <ApproveClub
-                                setRefetch={setRefetch}
-                                club={club}
-                            />
+                        {club.status === 'review' ? (
+                            <>
+                                <ApproveClub
+                                    setRefetch={setRefetch}
+                                    club={club}
+                                />
+                                <DisApproveClub
+                                    setRefetch={setRefetch}
+                                    club={club}
+                                />
+                            </>
+                        ) : (
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() =>
+                                    handleDelete(club?._id)
+                                }
+                                aria-label="Delete club"
+                            >
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                            </Button>
                         )}
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDelete(club?._id)}
-                            aria-label="Delete club"
-                        >
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
                     </>
                 ) : (
                     <Button

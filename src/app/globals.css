@@ -180,7 +180,7 @@ body {
     animation: spin78236 calc(var(--uib-speed) * 2.4) infinite linear;
 }
 .three-body-slow {
-    --uib-size: 35px;
+    --uib-size: 25px;
     --uib-speed: 4s;
     --uib-color: var(--loader-color);
     position: relative;

@@ -13,6 +13,7 @@ import {
 import Link from 'next/link';
 import Loader from '../loader';
 import { customFetch } from '@/lib/custom-fetch';
+import { usePathname } from 'next/navigation';
 
 type StudentEmailVerificationProps = {
     email: string;
@@ -28,6 +29,7 @@ export default function StudentEmailVerification({
     const [isEmailValid, setIsEmailValid] = useState(false);
     const [otpSent, setOtpSent] = useState(false);
     const [otp, setOtp] = useState<string>('');
+    const pathname = usePathname();
     const [isProcessing, setIsProcessing] = useState(false);
 
     const handleSendOtp = () => {
@@ -143,8 +145,8 @@ export default function StudentEmailVerification({
             ) : (
                 <>
                     <h2 className="text-3xl font-bold text-center mb-1">
-                        Lost Your Password Again? 😵‍💫 Time to Unleash
-                        Your Campus Email Magic! 🧙‍♂️
+                        Email us, or go back to binge-watching
+                        lectures you’ll never remember 🖥️💤.
                     </h2>
                     <p className="text-center text-gray-500 mb-6">
                         We&apos;ll send you a secret code (OTP). No
@@ -152,6 +154,13 @@ export default function StudentEmailVerification({
                     </p>
                 </>
             )}
+            <div className="absolute top-5 left-5 text-xl z-50 flex items-center justify-center gap-4">
+                Something Unique
+                <span className="bg-secondary w-[2px] h-8 rounded-full"></span>
+                <span className="capitalize text-neutral-500">
+                    {pathname.split('/')[1]}
+                </span>
+            </div>
 
             {!otpSent ? (
                 <div>

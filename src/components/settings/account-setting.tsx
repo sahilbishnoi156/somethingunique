@@ -5,24 +5,20 @@ import { redirect, useRouter } from 'next/navigation';
 import { parseJwt } from '@/lib/jwt';
 import { customFetch } from '@/lib/custom-fetch';
 import { toast } from 'sonner';
-import { JwtPayload } from '@/types/auth.types';
 
 export default function AccountSetting() {
-    const [payload, setPayload] = React.useState<JwtPayload>();
     React.useEffect(() => {
         const token = window?.localStorage.getItem('authToken');
         if (!token) {
             redirect('/register');
         } else {
             const data = parseJwt(token);
-            setPayload(data);
+            setEmail(data.user.email || '');
         }
     }, []);
 
     const router = useRouter();
-    const [email, setEmail] = React.useState(
-        payload?.user.email || ''
-    );
+    const [email, setEmail] = React.useState('');
     const [deleteAccountConfirmed, setDeleteAccountConfirmed] =
         React.useState(false);
 

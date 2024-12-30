@@ -36,7 +36,9 @@ export type UserType = {
 export type CollegeType = {
     _id?: string;
     name: string;
-    key: string;
+    state: string;
+    city: string;
+    country: string;
     createdAt: string;
 };
 export type ClubType = {

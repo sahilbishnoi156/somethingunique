@@ -26,6 +26,7 @@ import {
 import moment from 'moment';
 import Link from 'next/link';
 import { JwtPayload } from '@/types/auth.types';
+import Loader from '../loader';
 
 const Comments = ({ postId }: { postId: string | null }) => {
     const dispatch = useDispatch();
@@ -33,6 +34,7 @@ const Comments = ({ postId }: { postId: string | null }) => {
     const [newComment, setNewComment] = useState('');
     const [currPost, setCurrPost] = useState<PostType>();
     const [currUser, setCurrUser] = useState<UserType>();
+    const [fetchingDetails, setFetchingDetails] = useState(false);
 
     const [payload, setPayload] = React.useState<JwtPayload>();
     React.useEffect(() => {
@@ -53,6 +55,7 @@ const Comments = ({ postId }: { postId: string | null }) => {
 
         const fetchComments = async () => {
             try {
+                setFetchingDetails(true);
                 const response = await customFetch(
                     `/comments/get-comments-for-post?postId=${postId}`,
                     { method: 'GET' }
@@ -74,6 +77,8 @@ const Comments = ({ postId }: { postId: string | null }) => {
                     (error as Error).message ||
                         'Failed to fetch comments'
                 );
+            } finally {
+                setFetchingDetails(false);
             }
         };
 
@@ -250,6 +255,13 @@ const Comments = ({ postId }: { postId: string | null }) => {
         return null;
     }
 
+    if (fetchingDetails) {
+        return (
+            <div className="flex items-center justify-center h-full w-full">
+                <Loader />
+            </div>
+        );
+    }
     return (
         <div className="space-y-4 p-4 relative h-full">
             <h3 className="text-2xl font-bold">Yap Yap 🗨️</h3>

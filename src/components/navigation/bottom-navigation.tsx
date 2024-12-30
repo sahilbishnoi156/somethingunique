@@ -18,6 +18,7 @@ export default function BottomNavigation({
 }: {
     payload?: JwtPayload;
 }) {
+    console.log(payload);
     return (
         <>
             <div className="hidden sm:flex items-center justify-start p-3 px-10 gap-3">

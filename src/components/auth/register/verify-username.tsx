@@ -36,7 +36,7 @@ export default function CreateUsername({
     type = 'register',
     oldUsername,
 }: CreateUsernameProps) {
-    const [username, setUsername] = useState(oldUsername || '');
+    const [username, setUsername] = useState<string>('');
     const [status, setStatus] = useState<UsernameStatus>('idle');
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
     const router = useRouter();
@@ -50,6 +50,10 @@ export default function CreateUsername({
         setUsername(input);
         setStatus('idle');
     };
+
+    useEffect(() => {
+        setUsername(oldUsername || '');
+    }, [oldUsername]);
 
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);

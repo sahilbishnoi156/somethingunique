@@ -11,10 +11,10 @@ import {
 } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { customFetch } from '@/lib/custom-fetch';
-import { Check } from 'lucide-react';
+import { X } from 'lucide-react';
 import { ClubType } from '@/types/feed.types';
 
-export function ApproveClub({
+export function DisApproveClub({
     setRefetch,
     club,
 }: {
@@ -22,20 +22,16 @@ export function ApproveClub({
     club: ClubType;
 }) {
     const [open, setOpen] = useState(false);
-    const [isApproving, setIsApproving] = React.useState(false);
+    const [isDisApproving, setIsDisApproving] = React.useState(false);
     const onSubmit = async () => {
-        setIsApproving(true);
+        setIsDisApproving(true);
         try {
             const response = await customFetch(
-                '/dashboard/approve-club',
+                `/dashboard/remove-club?id=${club._id}`,
                 {
-                    method: 'PATCH',
-                    body: JSON.stringify({
-                        clubId: club._id,
-                    }),
+                    method: 'DELETE',
                 }
             );
-
             if (!response.ok) {
                 const data = await response.json();
                 throw new Error(data?.data || data?.message);
@@ -46,7 +42,7 @@ export function ApproveClub({
             console.error(error);
             if (error instanceof Error) toast.error(error.message);
         } finally {
-            setIsApproving(true);
+            setIsDisApproving(true);
         }
     };
 
@@ -54,19 +50,20 @@ export function ApproveClub({
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button size={'icon'} variant={'ghost'}>
-                    <Check className="h-4 w-4 text-green-500" />
+                    <X className="h-4 w-4 text-red-500" />
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Approving Club</DialogTitle>
+                    <DialogTitle>Disapproving Club</DialogTitle>
                     <DialogDescription>
                         I here by accept that i have reviewed the club{' '}
                         <span className="text-white font-semibold">
                             &quot;{club?.name}&quot;
                         </span>{' '}
-                        and i am approving it. If any issues found i
-                        will be responsible for it.
+                        and it is not authentic therefore i&apos;m
+                        disapproving. If any issues found i will be
+                        responsible for it.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -74,17 +71,19 @@ export function ApproveClub({
                     <Button
                         variant="default"
                         onClick={onSubmit}
-                        disabled={isApproving}
+                        disabled={isDisApproving}
                         className="w-full"
                     >
-                        {isApproving ? 'Approving...' : 'Approve'}
+                        {isDisApproving
+                            ? 'Disapproving...'
+                            : 'Disapprove'}
                     </Button>
 
                     <Button
                         variant="destructive"
                         onClick={() => setOpen(false)}
                         className="w-full"
-                        disabled={isApproving}
+                        disabled={isDisApproving}
                     >
                         Cancel
                     </Button>

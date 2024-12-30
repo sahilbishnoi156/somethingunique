@@ -6,12 +6,13 @@ import { customFetch } from '@/lib/custom-fetch';
 import Loader from '../loader';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import LogoutButton from '../auth/logout-button';
 
 export default function RegisterClub() {
     const [college, setCollege] = React.useState<CollegeType>();
     const [club, setClub] = React.useState<ClubType>();
     const [isFetching, setIsFetching] = React.useState(false);
-
+    const [refetch, setRefetch] = React.useState(false);
     React.useEffect(() => {
         const fetchCollege = async () => {
             setIsFetching(true);
@@ -35,17 +36,22 @@ export default function RegisterClub() {
             }
         };
         fetchCollege();
-    }, []);
+    }, [refetch]);
 
     if (isFetching) {
-        <div className="flex justify-center items-center h-full w-full ">
-            <Loader />
-        </div>;
+        return (
+            <div className="flex justify-center items-center h-full w-full sm:bg-secondary dark:sm:bg-secondary/30 rounded-xl">
+                <Loader />
+            </div>
+        );
     }
     if (!college)
         return (
-            <div>
+            <div className="flex justify-center flex-col gap-2 items-center h-full w-full sm:bg-secondary dark:sm:bg-secondary/30 rounded-xl text-red-500">
                 Something is wrong please logout and login again
+                <LogoutButton variant={'destructive'}>
+                    Logout
+                </LogoutButton>
             </div>
         );
     return (
@@ -84,7 +90,10 @@ export default function RegisterClub() {
                         You are a creator! Whoaa, Register you club
                         and spread your creativity.
                     </p>
-                    <CreateClubDialog college={college} />
+                    <CreateClubDialog
+                        college={college}
+                        setRefetch={setRefetch}
+                    />
                 </div>
             )}
         </div>

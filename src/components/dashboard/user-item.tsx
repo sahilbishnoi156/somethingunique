@@ -6,6 +6,7 @@ import { UserType } from '@/types/feed.types';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { customFetch } from '@/lib/custom-fetch';
 import { toast } from 'sonner';
+import CopyButton from '../CopyButton';
 
 interface UserItemProps {
     user: UserType;
@@ -43,6 +44,9 @@ export function UserItem({
     return (
         <TableRow>
             <TableCell>{serialNumber}</TableCell>
+            <TableCell className="flex gap-1">
+                <CopyButton item={user._id || ''} />
+            </TableCell>
             <TableCell>{user.username}</TableCell>
             <TableCell>{user.email}</TableCell>
             <TableCell>

@@ -31,6 +31,7 @@ export default function ProfilePage() {
     const [editBio, setEditBio] = React.useState(false);
     const { username } = useParams();
     const [payload, setPayload] = React.useState<JwtPayload>();
+    const [isEditingBio, setIsEditingBio] = React.useState(false);
     React.useEffect(() => {
         const token = window?.localStorage.getItem('authToken');
         if (!token) {
@@ -67,7 +68,6 @@ export default function ProfilePage() {
                             'Error fetching data'
                     );
                 }
-                console.log(data);
                 setProfile({
                     user: data.data.user,
                     posts: data.data.posts,
@@ -92,6 +92,7 @@ export default function ProfilePage() {
 
     const handleUpdateBio = async () => {
         if (editBio) {
+            setIsEditingBio(true);
             try {
                 const bio = document.querySelector('textarea')?.value;
                 const response = await customFetch(
@@ -119,6 +120,8 @@ export default function ProfilePage() {
                 setEditBio(false);
             } catch (error) {
                 console.error(error);
+            } finally {
+                setIsEditingBio(false);
             }
         } else {
             setEditBio(true);
@@ -253,8 +256,31 @@ export default function ProfilePage() {
                                     >
                                         {editBio ? (
                                             <>
-                                                <Check size={15} />
-                                                <span>Save Bio</span>
+                                                {isEditingBio ? (
+                                                    <>
+                                                        <div
+                                                            className="animate-spin inline-block size-5 border-[3px] border-current border-t-transparent dark:text-black rounded-full text-white"
+                                                            role="status"
+                                                            aria-label="loading"
+                                                        >
+                                                            <span className="sr-only">
+                                                                Loading...
+                                                            </span>
+                                                        </div>
+                                                        <span>
+                                                            Updating..
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Check
+                                                            size={15}
+                                                        />
+                                                        <span>
+                                                            Save Bio
+                                                        </span>
+                                                    </>
+                                                )}
                                             </>
                                         ) : (
                                             <>

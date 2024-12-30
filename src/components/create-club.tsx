@@ -38,8 +38,10 @@ type ClubFormValues = z.infer<typeof clubSchema>;
 
 export function CreateClubDialog({
     college,
+    setRefetch,
 }: {
     college: CollegeType;
+    setRefetch: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
     const [open, setOpen] = React.useState(false);
     const form = useForm<ClubFormValues>({
@@ -65,6 +67,7 @@ export function CreateClubDialog({
             toast.success(
                 "We have received your request. We'll review it and get back to you soon."
             );
+            setRefetch((prev) => !prev);
             setOpen(false);
             form.reset();
         } catch (error) {

@@ -91,15 +91,9 @@ export default function CreatePost({
                         );
                     }
 
-                    const response = await fetch('/api', {
+                    const response = await fetch(uploadUrl, {
                         method: 'POST',
-                        body: JSON.stringify({
-                            url: uploadUrl,
-                            options: {
-                                method: 'POST',
-                                body: formData,
-                            },
-                        }),
+                        body: formData,
                     });
 
                     if (!response.ok) {
@@ -134,6 +128,9 @@ export default function CreatePost({
                 toast.success('Post created successfully!');
                 dispatch(resetView());
                 dispatch(setPosts([data.data, ...posts]));
+                if (category === 'event') {
+                    window.location.reload();
+                }
             } else {
                 const errorData = await response.json();
                 throw new Error(

@@ -18,7 +18,6 @@ import {
     SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
-import Loader from './loader';
 
 export function NavMain({
     items,
@@ -36,14 +35,7 @@ export function NavMain({
 }) {
     return (
         <SidebarGroup>
-            <SidebarGroupLabel className="h-16">
-                <div className="flex items-center justify-center gap-3 py-3">
-                    <Link href={'/app'}>
-                        <Loader isLogo />
-                    </Link>
-                    <p>Admin&apos;s Villa</p>
-                </div>
-            </SidebarGroupLabel>
+            <SidebarGroupLabel>Students & Clubs</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map((item) => (
                     <Collapsible

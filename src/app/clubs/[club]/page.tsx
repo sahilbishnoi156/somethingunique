@@ -115,25 +115,26 @@ export default function Club() {
                             <p className="text-gray-400 text-sm">
                                 {currClub?.description}
                             </p>
-                            <p className="text-4xl pt-5">
-                                Latest Posts
-                            </p>
                         </div>
                         {posts.length === 0 ? (
-                            <div className="flex items-center justify-center text-center">
-                                <p className="text-2xl font-semibold mb-4 ">
+                            <div className="flex items-center justify-center text-center h-full ">
+                                <p className="text-2xl font-semibold my-4 ">
                                     There are no posts in this club
                                     currently.
                                 </p>
                             </div>
                         ) : (
-                            posts.map((post) => (
-                                <PostItem
-                                    key={post._id}
-                                    post={post}
-                                    userId={payload?.user?.id || ''}
-                                />
-                            ))
+                            <>
+                                {posts.map((post) => (
+                                    <PostItem
+                                        key={post._id}
+                                        post={post}
+                                        userId={
+                                            payload?.user?.id || ''
+                                        }
+                                    />
+                                ))}
+                            </>
                         )}
                     </div>
                 </div>

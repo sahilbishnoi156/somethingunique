@@ -5,6 +5,7 @@ import { CollegeType } from '@/types/feed.types';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { customFetch } from '@/lib/custom-fetch';
 import { toast } from 'sonner';
+import CopyButton from '../CopyButton';
 
 interface CollegeItemProps {
     college: CollegeType;
@@ -41,8 +42,12 @@ export function CollegeItem({
     return (
         <TableRow>
             <TableCell>{serialNumber}</TableCell>
+            <TableCell className="flex gap-1">
+                <CopyButton item={college._id || ''} />
+            </TableCell>
             <TableCell>{college.name}</TableCell>
-            <TableCell>{college.key}</TableCell>
+            <TableCell>{college.state}</TableCell>
+            <TableCell>{college.country}</TableCell>
             <TableCell>
                 {new Date(college.createdAt).toLocaleDateString() ||
                     'N/A'}

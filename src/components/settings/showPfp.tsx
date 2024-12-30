@@ -98,7 +98,10 @@ export default function ShowProfilePicture({
                 />
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-1 gap-5">
-                <p className="text-gray-600">Got new haircut??</p>
+                <p className="text-gray-600">
+                    Got new haircut?? Wanna show everyone how amazing
+                    you are. Let&apos;s goooo
+                </p>
                 {selectedImage ? (
                     <Button
                         onClick={handleImageUpload}
