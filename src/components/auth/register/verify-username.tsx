@@ -181,9 +181,9 @@ export default function CreateUsername({
         username: string
     ): Promise<boolean> => {
         try {
-            const response = await fetch(
-                BASE_API_URL +
-                    `/auth/check-username-availability?username=${username}`
+            const response = await customFetch(
+                `/auth/check-username-availability?username=${username}`,
+                { method: 'GET' }
             );
             const data = await response.json();
             if (!response.ok) {

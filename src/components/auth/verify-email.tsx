@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { validateEmail } from '@/lib/validatate-email';
-import { useRouter } from 'next/navigation';
 import {
     InputOTP,
     InputOTPGroup,
@@ -29,7 +28,6 @@ export default function StudentEmailVerification({
     const [isEmailValid, setIsEmailValid] = useState(false);
     const [otpSent, setOtpSent] = useState(false);
     const [otp, setOtp] = useState<string>('');
-    const router = useRouter();
     const [isProcessing, setIsProcessing] = useState(false);
 
     const handleSendOtp = () => {
@@ -94,7 +92,9 @@ export default function StudentEmailVerification({
                         data.data.authToken
                     );
                     resolve(data.data.authToken);
-                    router.refresh();
+                    setTimeout(() => {
+                        window.location.href = '/app';
+                    }, 500);
                 } catch (error) {
                     console.error('API error:', error);
                     reject(error);

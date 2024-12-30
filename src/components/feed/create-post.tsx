@@ -91,9 +91,15 @@ export default function CreatePost({
                         );
                     }
 
-                    const response = await fetch(uploadUrl, {
+                    const response = await fetch('/api', {
                         method: 'POST',
-                        body: formData,
+                        body: JSON.stringify({
+                            url: uploadUrl,
+                            options: {
+                                method: 'POST',
+                                body: formData,
+                            },
+                        }),
                     });
 
                     if (!response.ok) {
