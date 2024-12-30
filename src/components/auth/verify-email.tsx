@@ -20,7 +20,6 @@ type StudentEmailVerificationProps = {
     type: 'login' | 'register';
     setEmail: React.Dispatch<React.SetStateAction<string>>;
 };
-const BASE_API_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
 export default function StudentEmailVerification({
     email,
     setEmail,
@@ -39,11 +38,13 @@ export default function StudentEmailVerification({
             new Promise(async (resolve, reject) => {
                 // Make the API call
                 try {
-                    const response = await fetch(
-                        BASE_API_URL +
-                            '/auth/send-otp?email=' +
+                    const response = await customFetch(
+                        '/auth/send-otp?email=' +
                             email +
-                            `&type=${type}`
+                            `&type=${type}`,
+                        {
+                            method: 'GET',
+                        }
                     );
                     const data = await response.json();
                     if (!response.ok) {

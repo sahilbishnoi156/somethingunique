@@ -3,14 +3,14 @@ import { NextRequest } from 'next/server';
 export const POST = async (request: NextRequest) => {
     try {
         const { url, options } = await request.json();
-
+        console.log(url, options);
         const response = await fetch(url, options);
-
         if (!response.ok) {
             throw new Error('Failed to fetch data');
         }
 
         const data = await response.json();
+        console.log(data);
 
         return new Response(JSON.stringify(data), {
             status: 200,
