@@ -7,6 +7,13 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { customFetch } from '@/lib/custom-fetch';
 import { toast } from 'sonner';
 import CopyButton from '../CopyButton';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from '../ui/tooltip';
+import { UserToolTip } from '../show-user-tooltip';
+import Link from 'next/link';
 
 interface UserItemProps {
     user: UserType;
@@ -47,7 +54,21 @@ export function UserItem({
             <TableCell className="flex gap-1">
                 <CopyButton item={user._id || ''} />
             </TableCell>
-            <TableCell>{user.username}</TableCell>
+            <TableCell>
+                <Tooltip>
+                    <TooltipTrigger>
+                        <Link
+                            href={`/profile/${user.username}`}
+                            className="hover:underline"
+                        >
+                            {user.username}
+                        </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <UserToolTip user={user} />
+                    </TooltipContent>
+                </Tooltip>
+            </TableCell>
             <TableCell>{user.email}</TableCell>
             <TableCell>
                 <Badge

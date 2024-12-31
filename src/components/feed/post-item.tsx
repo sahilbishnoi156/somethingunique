@@ -18,6 +18,14 @@ import Link from 'next/link';
 import { Button } from '../ui/button';
 import Loader from '../loader';
 import MainCarousel from '../Carousel';
+import { usePathname } from 'next/navigation';
+import { UserToolTip } from '../show-user-tooltip';
+import {
+    Tooltip,
+    TooltipTrigger,
+    TooltipContent,
+    TooltipProvider,
+} from '../ui/tooltip';
 
 export default function PostItem({
     post,
@@ -258,9 +266,16 @@ export default function PostItem({
 
     const { postId } = useSelector((state: RootState) => state.view);
     const dispatch = useDispatch();
+    const pathname = usePathname();
 
     return (
-        <div className="group my-1 dark:hover:bg-secondary/20 hover:bg-secondary duration-300 w-full relative">
+        <div
+            className={`group my-1 dark:hover:bg-secondary/20   ${
+                pathname.includes('profile')
+                    ? 'hover:bg-primary/10 bg-secondary dark:bg-transparent'
+                    : 'hover:bg-secondary'
+            } rounded-lg duration-300 w-full relative`}
+        >
             {isDeleting && (
                 <div className="absolute h-full w-full bg-black/80 flex items-center flex-col gap-5 justify-center z-50">
                     <Loader />
@@ -405,20 +420,36 @@ export default function PostItem({
                                     }
                                 />
                             </div>
-                            <Link
-                                href={
-                                    '/profile/' +
-                                    post.user_id.username
-                                }
-                                className=""
-                            >
-                                <div className="text-lg font-semibold">
-                                    {post.user_id.username}
-                                </div>
-                                <div className="text-sm text-gray-500 relative bottom-2">
-                                    {moment(post.createdAt).fromNow()}
-                                </div>
-                            </Link>
+                            <TooltipProvider delayDuration={200}>
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <Link
+                                            href={
+                                                '/profile/' +
+                                                post.user_id.username
+                                            }
+                                            className="flex items-start flex-col"
+                                        >
+                                            <div className="text-lg font-semibold">
+                                                {
+                                                    post.user_id
+                                                        .username
+                                                }
+                                            </div>
+                                            <div className="text-sm text-gray-500 relative bottom-2">
+                                                {moment(
+                                                    post.createdAt
+                                                ).fromNow()}
+                                            </div>
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <UserToolTip
+                                            user={post.user_id}
+                                        />
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                         </div>
                         <div className="mt-2 dark:text-gray-100 text-neutral-700 whitespace-pre-line">
                             {renderCaption()}

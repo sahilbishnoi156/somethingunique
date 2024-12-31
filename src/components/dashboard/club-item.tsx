@@ -20,7 +20,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from '../ui/tooltip';
-import { UserToopTip } from '../show-user-tooltip';
+import { UserToolTip } from '../show-user-tooltip';
 import { DisApproveClub } from './disapprove-club';
 
 interface ClubItemProps {
@@ -121,7 +121,7 @@ export function ClubItem({
                             {(club.admin as UserType)?.username}
                         </TooltipTrigger>
                         <TooltipContent>
-                            <UserToopTip user={club.admin} />
+                            <UserToolTip user={club.admin} />
                         </TooltipContent>
                     </Tooltip>
                 )}

@@ -29,7 +29,7 @@ const LandingPage = () => {
                 <h1 className="text-3xl font-bold text-center mb-1">
                     {HEADING}
                 </h1>
-                <p className="text-center text-gray-300">
+                <p className="text-center text-primary/80">
                     {DESCRIPTION}
                 </p>
                 <div className="mt-10 flex gap-5 w-1/2">

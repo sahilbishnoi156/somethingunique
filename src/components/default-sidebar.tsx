@@ -99,7 +99,7 @@ export default function DefaultSidebar() {
                                 style={{
                                     backgroundColor: randomColor,
                                 }}
-                                className="text-sm font-medium py-1"
+                                className="text-sm font-medium py-1 text-black"
                             >
                                 {club.name}
                             </Badge>

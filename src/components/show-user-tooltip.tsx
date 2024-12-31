@@ -2,7 +2,7 @@ import { UserType } from '@/types/feed.types';
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
-export const UserToopTip = ({ user }: { user: UserType }) => {
+export const UserToolTip = ({ user }: { user: UserType }) => {
     return (
         <div className="max-w-[300px] cursor-pointer">
             <div className="justify-between">
@@ -36,7 +36,9 @@ export const UserToopTip = ({ user }: { user: UserType }) => {
                 </div>
             </div>
             <div>
-                <p className="pl-px">{user?.bio?.slice(0, 50)}</p>
+                <p className="pl-px whitespace-pre-line">
+                    {user?.bio?.slice(0, 50)}
+                </p>
             </div>
         </div>
     );

@@ -9,7 +9,7 @@ import { customFetch } from '@/lib/custom-fetch';
 import { parseJwt } from '@/lib/jwt';
 import { getRandomElement } from '@/lib/random-item';
 import { PostType, UserType } from '@/types/feed.types';
-import { Check, ClipboardCheck, Pencil, Send } from 'lucide-react';
+import { Check, ClipboardCheck, Pencil, Send, X } from 'lucide-react';
 import Image from 'next/image';
 import { redirect, useParams } from 'next/navigation';
 import React from 'react';
@@ -166,8 +166,15 @@ export default function ProfilePage() {
                     <div className="w-full h-[250px] relative">
                         <Image
                             alt="Profile Background"
-                            src="https://cdn.pixabay.com/photo/2015/11/04/09/28/banner-1022119_1280.jpg"
-                            className="w-full h-full rounded-tl-lg rounded-tr-lg -z-10"
+                            src="https://pixabay.com/get/g888fe05a33b1859965d74b04be7ecdf1cf0bcd46649b930edda77649842e5f1584bd4c80c04d2157008bdbbac75668fb.jpg"
+                            className="w-full h-full -z-10"
+                            layout="fill"
+                            objectFit="cover"
+                        />
+                        <Image
+                            alt="Profile Background"
+                            src="https://pixabay.com/get/gfef4be2bd6c0145aa163dd9d4b961c4ceffabe5ea73aed3629788e6e2876d4dea9a3ca01f1d17aff7108ae390472be16.jpg"
+                            className="w-full dark:hidden h-full -z-10"
                             layout="fill"
                             objectFit="cover"
                         />
@@ -209,7 +216,7 @@ export default function ProfilePage() {
                                 </svg>
                             </span>
                         </div>
-                        <div className="text-primary-300 sm:w-1/2 p-2 w-full text-center">
+                        <div className="text-primary-300 sm:w-1/2 p-2 w-full text-center whitespace-pre-line">
                             {editBio ? (
                                 <textarea
                                     className="w-full p-2 rounded-lg border border-primary-300 text-primary"
@@ -289,6 +296,18 @@ export default function ProfilePage() {
                                             </>
                                         )}
                                     </Button>
+                                    {editBio && (
+                                        <Button
+                                            className="flex items-center"
+                                            variant={'destructive'}
+                                            onClick={() => {
+                                                setEditBio(false);
+                                            }}
+                                        >
+                                            <X />
+                                            Cancel
+                                        </Button>
+                                    )}
                                     <Link
                                         href={'/settings?tab=profile'}
                                     >
