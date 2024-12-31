@@ -113,7 +113,7 @@ export default function StudentEmailVerification({
     };
 
     return (
-        <div className="w-1/2 mx-auto mt-10">
+        <div className="lg:w-1/2 sm:w-3/4 w-full p-5 mx-auto mt-10">
             {isProcessing && (
                 <div className="w-screen h-screen bg-background fixed inset-0 flex items-center justify-center">
                     <Loader />
@@ -121,7 +121,7 @@ export default function StudentEmailVerification({
             )}
             {otpSent ? (
                 <>
-                    <h2 className="text-3xl font-bold text-center mb-1">
+                    <h2 className="sm:text-3xl text-xl font-bold text-center mb-1">
                         Ready to Prove You Belong? Enter Your OTP to
                         Unlock the College Fun! 🚀
                     </h2>
@@ -132,7 +132,7 @@ export default function StudentEmailVerification({
                 </>
             ) : type === 'register' ? (
                 <>
-                    <h2 className="text-3xl font-bold text-center mb-1">
+                    <h2 className="sm:text-3xl text-xl  font-bold text-center mb-1">
                         Ready to Join the College Fun? Enter Your
                         Campus Email to Get Started! 🚀
                     </h2>
@@ -144,7 +144,7 @@ export default function StudentEmailVerification({
                 </>
             ) : (
                 <>
-                    <h2 className="text-3xl font-bold text-center mb-1">
+                    <h2 className="sm:text-3xl text-xl font-bold text-center mb-1">
                         Email us, or go back to binge-watching
                         lectures you’ll never remember 🖥️💤.
                     </h2>
@@ -188,6 +188,7 @@ export default function StudentEmailVerification({
                         <Button
                             variant={'default'}
                             disabled={!isEmailValid}
+                            className="w-full md:w-fit"
                             onClick={handleSendOtp}
                         >
                             Send Me the Code 🚀
@@ -198,7 +199,6 @@ export default function StudentEmailVerification({
                 <div className="">
                     <div className="flex items-center justify-center mb-6">
                         <InputOTP
-                            size={30}
                             maxLength={6}
                             value={otp}
                             onChange={(value) => {
@@ -206,36 +206,15 @@ export default function StudentEmailVerification({
                             }}
                         >
                             <InputOTPGroup>
-                                <InputOTPSlot
-                                    className="h-12 w-12"
-                                    index={0}
-                                />
-                                <InputOTPSlot
-                                    className="h-12 w-12"
-                                    index={1}
-                                />
+                                <InputOTPSlot index={0} />
+                                <InputOTPSlot index={1} />
+                                <InputOTPSlot index={2} />
                             </InputOTPGroup>
                             <InputOTPSeparator />
                             <InputOTPGroup>
-                                <InputOTPSlot
-                                    className="h-12 w-12"
-                                    index={2}
-                                />
-                                <InputOTPSlot
-                                    className="h-12 w-12"
-                                    index={3}
-                                />
-                            </InputOTPGroup>
-                            <InputOTPSeparator />
-                            <InputOTPGroup>
-                                <InputOTPSlot
-                                    className="h-12 w-12"
-                                    index={4}
-                                />
-                                <InputOTPSlot
-                                    className="h-12 w-12"
-                                    index={5}
-                                />
+                                <InputOTPSlot index={3} />
+                                <InputOTPSlot index={4} />
+                                <InputOTPSlot index={5} />
                             </InputOTPGroup>
                         </InputOTP>
                     </div>
@@ -244,7 +223,7 @@ export default function StudentEmailVerification({
                             variant={'default'}
                             disabled={otp?.length !== 6}
                             onClick={handleVerifyOtp}
-                            className="py-4 px-10"
+                            className="py-4 px-10 w-full sm:w-fit"
                         >
                             Let Me In! 🎉
                         </Button>

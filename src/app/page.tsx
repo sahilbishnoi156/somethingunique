@@ -25,14 +25,14 @@ const LandingPage = () => {
             <div className="w-full">
                 <Loader />
             </div>
-            <div className="h-full w-1/2 flex-col flex justify-center items-center">
+            <div className="h-full sm:w-1/2 w-full flex-col flex justify-center items-center">
                 <h1 className="text-3xl font-bold text-center mb-1">
                     {HEADING}
                 </h1>
                 <p className="text-center text-primary/80">
                     {DESCRIPTION}
                 </p>
-                <div className="mt-10 flex gap-5 w-1/2">
+                <div className="mt-10 flex items-center justify-center gap-5 w-full">
                     {authToken ? (
                         <Link href={'/app'} className="w-full">
                             <Button
@@ -43,17 +43,23 @@ const LandingPage = () => {
                             </Button>
                         </Link>
                     ) : (
-                        <>
-                            <Link href={'/login'}>
+                        <div className="flex flex-col items-center justify-center sm:flex-row gap-5 w-full">
+                            <Link
+                                href={'/login'}
+                                className="w-full text-lg"
+                            >
                                 <Button
-                                    className="w-full text-lg"
+                                    className="w-full"
                                     variant="default"
                                     size={'lg'}
                                 >
                                     Login
                                 </Button>
                             </Link>
-                            <Link href={'/register'}>
+                            <Link
+                                href={'/register'}
+                                className="w-full"
+                            >
                                 <Button
                                     className="w-full text-lg"
                                     variant="default"
@@ -62,7 +68,7 @@ const LandingPage = () => {
                                     Register (It&apos;s Free! 🎉)
                                 </Button>
                             </Link>
-                        </>
+                        </div>
                     )}
                 </div>
             </div>
