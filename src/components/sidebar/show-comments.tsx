@@ -295,7 +295,7 @@ const Comments = ({ postId }: { postId: string | null }) => {
                     {renderCaption()}
                 </div>
             </CardContent>
-            <Card className="absolute w-full bottom-0 left-0">
+            <Card className="absolute w-[96%] bottom-2 left-2">
                 <CardContent className="p-4 flex flex-col justify-center items-end w-full">
                     <div className="flex gap-2 w-full">
                         <Avatar>

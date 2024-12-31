@@ -70,6 +70,9 @@ export default function DataTable({
                       case 'students':
                           const user = item as UserType;
                           return (
+                              user?.role?.includes(
+                                  searchQuery?.toLowerCase() || ''
+                              ) ||
                               user?.username
                                   ?.toLowerCase()
                                   ?.includes(

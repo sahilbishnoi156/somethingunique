@@ -32,23 +32,25 @@ export default function RootLayout({
         (state: RootState) => state.view
     );
     return (
-        <div className="p-1 sm:p-3 h-screen w-screen flex items-center justify-center gap-10 bg-background divide-x">
+        <div className="p-1 sm:p-3 h-screen w-screen flex items-center justify-start gap-10 bg-background divide-x">
             <div
                 className={`h-full ${
                     viewType === 'default'
-                        ? 'md:w-3/4 w-full'
+                        ? 'lg:w-3/4 w-full'
                         : 'w-3/5 '
                 } flex flex-col gap-5 transition-all duration-500 ease-in-out`}
             >
                 <div
-                    className={`sm:h-[92%] h-full rounded-xl overflow-scroll pb-5 scrollbar-hide relative`}
+                    className={`lg:h-[92%] h-full rounded-xl overflow-scroll pb-5 scrollbar-hide relative`}
                 >
                     <Suspense>{children}</Suspense>
                 </div>
                 <div
-                    className={`h-[8%] absolute sm:relative ${
-                        viewType !== 'default' ? 'left-4' : 'right-4'
-                    } bottom-4 right-4 z-50 rounded-xl w-fit`}
+                    className={`h-[8%] absolute lg:relative ${
+                        viewType !== 'default'
+                            ? 'lg:left-4 right-4'
+                            : 'right-4'
+                    } bottom-4 left-4 z-50 rounded-xl w-fit`}
                 >
                     <Suspense>
                         <BottomNavigation payload={payload} />
@@ -59,8 +61,8 @@ export default function RootLayout({
                 className={`${
                     viewType !== 'default'
                         ? 'absolute top-0 left-0 inset-0'
-                        : 'hidden sm:block'
-                } md:relative  md:hover:bg-secondary/20 bg-background duration-150 flex-1 h-full md:rounded-xl overflow-scroll scrollbar-hide`}
+                        : 'hidden lg:block'
+                } md:relative  md:hover:bg-secondary/20 bg-background duration-150 flex-1 h-[88%] lg:h-full md:rounded-xl overflow-scroll scrollbar-hide`}
             >
                 <SideBar />
             </div>

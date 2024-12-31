@@ -97,7 +97,20 @@ export default function Page() {
         return (
             <div className="flex flex-col gap-4 p-4 pt-0">
                 <div className="grid grid-cols-1 sm:auto-rows-min md:grid-cols-2 gap-4  lg:grid-cols-3">
-                    <Card>
+                    <Card
+                        onClick={() => {
+                            const searchQuery = new URLSearchParams(
+                                params.toString()
+                            );
+                            searchQuery.delete('search');
+                            window.history.pushState(
+                                null,
+                                '',
+                                `?${searchQuery.toString()}`
+                            );
+                        }}
+                        className="dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none"
+                    >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
                                 Total Super Admins
@@ -110,7 +123,27 @@ export default function Page() {
                             </div>
                         </CardContent>
                     </Card>
-                    <Card>
+                    <Card
+                        onClick={() => {
+                            const searchQuery = new URLSearchParams(
+                                params.toString()
+                            );
+                            searchQuery.set(
+                                'search',
+                                'college_admin'
+                            );
+                            window.history.pushState(
+                                null,
+                                '',
+                                `?${searchQuery.toString()}`
+                            );
+                        }}
+                        className={
+                            search === 'college_admin'
+                                ? 'dark:bg-secondary/30 bg-secondary cursor-pointer shadow-none'
+                                : 'dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none'
+                        }
+                    >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
                                 Total College Admins
@@ -123,7 +156,24 @@ export default function Page() {
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="">
+                    <Card
+                        onClick={() => {
+                            const searchQuery = new URLSearchParams(
+                                params.toString()
+                            );
+                            searchQuery.set('search', 'student');
+                            window.history.pushState(
+                                null,
+                                '',
+                                `?${searchQuery.toString()}`
+                            );
+                        }}
+                        className={
+                            search === 'student'
+                                ? 'dark:bg-secondary/30 bg-secondary cursor-pointer shadow-none'
+                                : 'dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none'
+                        }
+                    >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
                                 Total Students
@@ -224,7 +274,11 @@ export default function Page() {
                                 `?${searchQuery.toString()}`
                             );
                         }}
-                        className="dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none"
+                        className={
+                            search === 'active'
+                                ? 'dark:bg-secondary/30 bg-secondary cursor-pointer shadow-none'
+                                : 'dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none'
+                        }
                     >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
@@ -250,7 +304,11 @@ export default function Page() {
                                 `?${searchQuery.toString()}`
                             );
                         }}
-                        className="dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none"
+                        className={
+                            search === 'review'
+                                ? 'dark:bg-secondary/30 bg-secondary cursor-pointer shadow-none'
+                                : 'dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none'
+                        }
                     >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">

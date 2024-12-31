@@ -155,7 +155,7 @@ export default function StudentEmailVerification({
                 </>
             )}
             <div className="absolute top-5 left-5 text-xl z-50 flex items-center justify-center gap-4">
-                Something Unique
+                <Link href="/">Something Unique</Link>
                 <span className="bg-secondary w-[2px] h-8 rounded-full"></span>
                 <span className="capitalize text-neutral-500">
                     {pathname.split('/')[1]}
@@ -253,21 +253,21 @@ export default function StudentEmailVerification({
             )}
 
             {type === 'login' ? (
-                <p className="text-center text-gray-400 mt-6">
+                <p className="text-center text-primary/80 mt-6">
                     Noting up your sleeves brat? Start from{' '}
                     <Link
                         href="/register"
-                        className="text-blue-400 hover:underline"
+                        className="text-blue-600 hover:underline"
                     >
                         here
                     </Link>{' '}
                 </p>
             ) : (
-                <p className="text-center text-gray-400 mt-6">
+                <p className="text-center text-primary/80 mt-6">
                     Already a member of the secret society?{' '}
                     <Link
                         href="/login"
-                        className="text-blue-400 hover:underline"
+                        className="text-blue-600 hover:underline"
                     >
                         Log in{' '}
                     </Link>

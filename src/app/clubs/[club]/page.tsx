@@ -1,14 +1,24 @@
 'use client';
 import { RootState } from '@/app/store/store';
+import BackButton from '@/components/back-button';
 import CreatePost from '@/components/feed/create-post';
 import PostItem from '@/components/feed/post-item';
 import Loader from '@/components/loader';
 import BottomNavigation from '@/components/navigation/bottom-navigation';
+import { UserToolTip } from '@/components/show-user-tooltip';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { customFetch } from '@/lib/custom-fetch';
 import { parseJwt } from '@/lib/jwt';
 import { JwtPayload } from '@/types/auth.types';
 import { ClubType, PostType } from '@/types/feed.types';
+import moment from 'moment';
 import Image from 'next/image';
+import Link from 'next/link';
 import { redirect, useParams } from 'next/navigation';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -107,33 +117,112 @@ export default function Club() {
                 <div
                     className={`sm:h-[92%] w-full h-full rounded-xl overflow-scroll pb-5 scrollbar-hide relative`}
                 >
-                    <div className="divide-y w-full py-1">
-                        <div>
-                            <h1 className="text-2xl ">
-                                Club: {currClub?.name}
-                            </h1>
-                            <p className="text-gray-400 text-sm">
-                                {currClub?.description}
-                            </p>
+                    <div className="w-full h-full py-1 ">
+                        <div className="flex items-center gap-4 mb-4">
+                            <BackButton
+                                variant={'ghost'}
+                                className="bg-primary/10 hover:bg-primary/20"
+                            />
+                            <Link href={'/app/feed'}>
+                                Something Unique
+                            </Link>
                         </div>
+                        <div className="space-y-4 border p-4 rounded-xl bg-secondary/80">
+                            <div>
+                                <div className="flex items-end gap-1">
+                                    <h1 className="text-3xl sm:text-4xl font-bold">
+                                        {currClub?.name}
+                                    </h1>
+                                    {typeof currClub?.admin !==
+                                        'string' && (
+                                        <span className="text-xs relative bottom-1">
+                                            by{' '}
+                                            <TooltipProvider
+                                                delayDuration={200}
+                                            >
+                                                <Tooltip>
+                                                    <TooltipTrigger>
+                                                        <Link
+                                                            href={
+                                                                '/profile/' +
+                                                                currClub
+                                                                    ?.admin
+                                                                    .username
+                                                            }
+                                                            className="flex items-start flex-col hover:underline hover:text-blue-800"
+                                                        >
+                                                            {
+                                                                currClub
+                                                                    ?.admin
+                                                                    .username
+                                                            }
+                                                        </Link>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        <UserToolTip
+                                                            user={
+                                                                currClub?.admin
+                                                            }
+                                                        />
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="text-xs divide-x-2 divide-primary">
+                                    <span className="dark:text-foreground/50 text-foreground/70 font-medium pr-2">
+                                        Since{' '}
+                                        {moment(
+                                            currClub?.createdAt
+                                        ).format('MMM')}
+                                        ,{' '}
+                                        {moment(
+                                            currClub?.createdAt
+                                        ).format('YYYY')}
+                                    </span>
+                                    {typeof currClub?.college_id !==
+                                        'string' && (
+                                        <span className="dark:text-foreground/50 text-foreground/70 font-medium pl-2">
+                                            {
+                                                currClub?.college_id
+                                                    .name
+                                            }
+                                        </span>
+                                    )}
+                                </div>
+
+                                <p className="text-primary/90 text-md font-thin whitespace-pre-line mt-1">
+                                    &ldquo;{currClub?.description}
+                                    &rdquo;
+                                </p>
+                            </div>
+                        </div>
+
                         {posts.length === 0 ? (
-                            <div className="flex items-center justify-center text-center h-full ">
+                            <div className="flex items-center justify-center text-center">
                                 <p className="text-2xl font-semibold my-4 ">
-                                    There are no posts in this club
+                                    There are no activies in this club
                                     currently.
                                 </p>
                             </div>
                         ) : (
                             <>
-                                {posts.map((post) => (
-                                    <PostItem
-                                        key={post._id}
-                                        post={post}
-                                        userId={
-                                            payload?.user?.id || ''
-                                        }
-                                    />
-                                ))}
+                                <div className="mt-4">
+                                    Clubs Activities :
+                                </div>
+                                <div className="grid auto-rows-min lg:grid-cols-2 gap-4">
+                                    {posts.map((post) => (
+                                        <PostItem
+                                            key={post._id}
+                                            post={post}
+                                            userId={
+                                                payload?.user?.id ||
+                                                ''
+                                            }
+                                        />
+                                    ))}
+                                </div>
                             </>
                         )}
                     </div>

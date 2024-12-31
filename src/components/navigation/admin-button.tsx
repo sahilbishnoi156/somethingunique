@@ -19,11 +19,11 @@ export const AdminButton = ({ role }: { role?: string }) => {
                             <Button
                                 variant="secondary"
                                 size={'lg'}
-                                className="h-12 rounded-xl"
+                                className="h-12 rounded-xl w-full"
                             >
                                 <ShieldCheck />
                                 <div className="sm:hidden block">
-                                    Admin Dashboard
+                                    Admin
                                 </div>
                             </Button>
                         </Link>

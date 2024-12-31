@@ -232,8 +232,8 @@ export default function ProfilePage() {
                             {profile?.title || ''}
                         </p>
                     </div>
-                    <div className="flex-1 flex flex-col items-center lg:items-end justify-end px-8 mt-2">
-                        <div className="flex items-center space-x-4 mt-2">
+                    <div className="flex-1 flex flex-col items-center md:items-end justify-end px-8 mt-2">
+                        <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-4 ">
                             <Button
                                 className="flex items-center"
                                 onClick={() => {
@@ -257,6 +257,14 @@ export default function ProfilePage() {
                             </Button>
                             {isMyProfile && (
                                 <>
+                                    <Link
+                                        href={'/settings?tab=profile'}
+                                    >
+                                        <Button className="flex items-center">
+                                            <Pencil size={15} />
+                                            <span>Edit Profile</span>
+                                        </Button>
+                                    </Link>
                                     <Button
                                         className="flex items-center"
                                         onClick={handleUpdateBio}
@@ -308,14 +316,6 @@ export default function ProfilePage() {
                                             Cancel
                                         </Button>
                                     )}
-                                    <Link
-                                        href={'/settings?tab=profile'}
-                                    >
-                                        <Button className="flex items-center">
-                                            <Pencil size={15} />
-                                            <span>Edit Profile</span>
-                                        </Button>
-                                    </Link>
                                 </>
                             )}
                         </div>
@@ -326,10 +326,8 @@ export default function ProfilePage() {
                         No posts found
                     </p>
                 ) : (
-                    <div className="flex items-center justify-center flex-col py-10 p-2 border-t">
-                        <h1 className="text-2xl font-bold mb-10">
-                            Posts
-                        </h1>
+                    <div className="flex items-center justify-center flex-col pb-12 sm:py-10 p-2 border-t">
+                        <h1 className="text-2xl font-bold">Posts</h1>
                         <div
                             className={`divide-y ${
                                 viewType === 'showComments'

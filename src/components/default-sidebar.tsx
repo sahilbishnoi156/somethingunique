@@ -13,6 +13,7 @@ import { getRandomElement } from '@/lib/random-item';
 import { Badge } from './ui/badge';
 import { JwtPayload } from '@/types/auth.types';
 import { Search } from 'lucide-react';
+import { IDENTITIES } from '@/constants/sentences';
 
 export default function DefaultSidebar() {
     const [payload, setPayload] = React.useState<JwtPayload>();
@@ -46,10 +47,13 @@ export default function DefaultSidebar() {
 
     const dispatch = useDispatch();
     return (
-        <div className="p-6">
-            <div className="space-y-3 flex flex-col mt-5 ">
+        <div className="md:p-6 p-3">
+            <Link href={'/app/feed'} className="text-2xl ">
+                Something Unique
+            </Link>
+            <div className="space-y-3 flex flex-col mt-2">
                 <div
-                    className="text-xl bg-secondary p-3 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-secondary/80"
+                    className="text-xl bg-secondary p-3 py-1.5 rounded-lg flex items-center gap-2 cursor-pointer hover:bg-secondary/80"
                     onClick={() => dispatch(showSearch())}
                 >
                     <Search className="h-5 w-5" />
@@ -57,7 +61,7 @@ export default function DefaultSidebar() {
                 </div>
             </div>
             <h2 className="font-semibold text-xl mt-10">Profile</h2>
-            <div className="flex items-center gap-2 mt-4">
+            <div className="flex items-center gap-2 mt-1">
                 <Avatar>
                     <AvatarImage
                         src={
@@ -81,12 +85,15 @@ export default function DefaultSidebar() {
                             @{payload?.user.username}
                         </div>
                     </Link>
+                    <span className="text-xs relative bottom-1">
+                        {getRandomElement(IDENTITIES)}
+                    </span>
                 </div>
             </div>
             {clubs.length !== 0 && (
                 <h2 className="font-semibold text-xl mt-10">Clubs</h2>
             )}
-            <div className="flex flex-wrap gap-4 mt-4">
+            <div className="flex flex-wrap gap-4 mt-2">
                 {clubs.map((club) => {
                     const randomColor = getRandomElement(CLUB_COLORS);
                     return (
@@ -99,7 +106,7 @@ export default function DefaultSidebar() {
                                 style={{
                                     backgroundColor: randomColor,
                                 }}
-                                className="text-sm font-medium py-1 text-black"
+                                className="border text-sm font-medium py-1 text-black hover:shadow-md dark:shadow-black shadow-white transition duration-300 cursor-pointer"
                             >
                                 {club.name}
                             </Badge>

@@ -21,7 +21,7 @@ import {
     SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { customFetch } from '@/lib/custom-fetch';
-import { UserType } from '@/types/feed.types';
+import { CollegeType, UserType } from '@/types/feed.types';
 import { ClipboardList, SquareTerminal, Users } from 'lucide-react';
 import Link from 'next/link';
 import { redirect, useSearchParams } from 'next/navigation';
@@ -36,6 +36,36 @@ export default function Page() {
     const [data, setData] = React.useState(null);
     const [isDataFetching, setIsDataFetching] = React.useState(false);
     const [refetch, setRefetch] = React.useState(true);
+
+    const [college, setCollege] = React.useState<CollegeType>();
+
+    React.useEffect(() => {
+        const fetchCollege = async () => {
+            try {
+                const response = await customFetch(
+                    '/dashboard/get-college',
+                    {
+                        method: 'GET',
+                    }
+                );
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data?.data || data?.message);
+                }
+                setCollege(data.data);
+                toast.success(
+                    'Welcome ' +
+                        data.data.name.split(',')[0] +
+                        "'s Admin"
+                );
+            } catch (error) {
+                console.error(error);
+                if (error instanceof Error)
+                    toast.error(error.message);
+            }
+        };
+        if (!college) fetchCollege();
+    }, [college]);
 
     React.useEffect(() => {
         if (tabTypes.includes(tab as string)) {
@@ -157,7 +187,11 @@ export default function Page() {
                                 `?${searchQuery.toString()}`
                             );
                         }}
-                        className="dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none"
+                        className={
+                            search === 'active'
+                                ? 'dark:bg-secondary/30 bg-secondary cursor-pointer shadow-none'
+                                : 'dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none'
+                        }
                     >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
@@ -183,7 +217,11 @@ export default function Page() {
                                 `?${searchQuery.toString()}`
                             );
                         }}
-                        className="dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none"
+                        className={
+                            search === 'review'
+                                ? 'dark:bg-secondary/30 bg-secondary cursor-pointer shadow-none'
+                                : 'dark:hover:bg-secondary/30 hover:bg-secondary cursor-pointer shadow-none'
+                        }
                     >
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">
@@ -229,11 +267,11 @@ export default function Page() {
         return (
             <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="aspect-video rounded-xl bg-muted/50 animate-pulse" />
-                    <div className="aspect-video rounded-xl bg-muted/50 animate-pulse" />
-                    <div className="aspect-video rounded-xl bg-muted/50 animate-pulse" />
+                    <div className="aspect-video rounded-xl dark:bg-secondary bg-primary/10 animate-pulse" />
+                    <div className="aspect-video rounded-xl dark:bg-secondary bg-primary/10 animate-pulse" />
+                    <div className="aspect-video rounded-xl dark:bg-secondary bg-primary/10 animate-pulse" />
                 </div>
-                <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min animate-pulse" />
+                <div className="min-h-[100vh] flex-1 rounded-xl dark:bg-secondary bg-primary/10 md:min-h-min animate-pulse" />
             </div>
         );
     };
@@ -269,7 +307,8 @@ export default function Page() {
                             <BreadcrumbList>
                                 <BreadcrumbItem className="hidden md:block">
                                     <Link href="/admin/college">
-                                        College Admin Dashboard
+                                        {college?.name ||
+                                            'College Admin Dashboard'}
                                     </Link>
                                 </BreadcrumbItem>
                                 {tab && (

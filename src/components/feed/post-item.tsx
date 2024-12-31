@@ -270,9 +270,10 @@ export default function PostItem({
 
     return (
         <div
-            className={`group my-1 dark:hover:bg-secondary/20   ${
-                pathname.includes('profile')
-                    ? 'hover:bg-primary/10 bg-secondary dark:bg-transparent'
+            className={`group my-1 dark:hover:bg-secondary/40   ${
+                pathname.includes('profile') ||
+                pathname.includes('clubs')
+                    ? 'hover:bg-primary/10 bg-secondary dark:bg-secondary/20'
                     : 'hover:bg-secondary'
             } rounded-lg duration-300 w-full relative`}
         >
@@ -346,7 +347,7 @@ export default function PostItem({
                             <>
                                 <div
                                     className={
-                                        'bg-secondary/30 hover:bg-secondary p-2.5 rounded-full cursor-pointer'
+                                        'dark:bg-secondary/60 bg-secondary hover:bg-primary/10 dark:hover:bg-secondaryy p-2.5 rounded-full cursor-pointer'
                                     }
                                     onClick={() => {
                                         navigator.clipboard.writeText(
@@ -372,7 +373,7 @@ export default function PostItem({
                                     className={`p-2.5 rounded-full cursor-pointer ${
                                         postId === post._id
                                             ? 'bg-primary text-secondary'
-                                            : 'bg-secondary/30 hover:bg-secondary text-primary'
+                                            : 'dark:bg-secondary/60 bg-secondary hover:bg-primary/10 dark:hover:bg-secondary'
                                     }`}
                                     onClick={() =>
                                         dispatch(

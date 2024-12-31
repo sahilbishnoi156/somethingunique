@@ -2,7 +2,7 @@ import { UserType } from '@/types/feed.types';
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
-export const UserToolTip = ({ user }: { user: UserType }) => {
+export const UserToolTip = ({ user }: { user?: UserType }) => {
     return (
         <div className="max-w-[300px] cursor-pointer">
             <div className="justify-between">
@@ -14,7 +14,7 @@ export const UserToolTip = ({ user }: { user: UserType }) => {
                                 `/placeholder.svg?height=40&width=40`
                             }
                             className="object-cover"
-                            alt={user.username}
+                            alt={user?.username}
                         />
                         <AvatarFallback>
                             {user?.username
@@ -29,7 +29,7 @@ export const UserToolTip = ({ user }: { user: UserType }) => {
                         <h5 className="relative bottom-1.5">
                             since{' '}
                             {new Date(
-                                user?.createdAt
+                                user?.createdAt || ''
                             ).toLocaleDateString()}
                         </h5>
                     </div>

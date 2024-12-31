@@ -1,3 +1,4 @@
+'use client';
 import { BOTTOM_NAV_LINKS } from '@/constants/links';
 import { BottomNavigationLink } from '@/types/navigation-links.types';
 import { BottomNavigationItem } from './bottom-nav-item';
@@ -9,19 +10,25 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '../ui/button';
-import { ChevronsUp } from 'lucide-react';
+import { ChevronsUp, Search } from 'lucide-react';
 import { JwtPayload } from '@/types/auth.types';
 import { AdminButton } from './admin-button';
+import { showSearch } from '@/app/store/view-slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/app/store/store';
 
 export default function BottomNavigation({
     payload,
 }: {
     payload?: JwtPayload;
 }) {
-    console.log(payload);
+    const dispatch = useDispatch();
+    const { viewType } = useSelector(
+        (state: RootState) => state.view
+    );
     return (
         <>
-            <div className="hidden sm:flex items-center justify-start p-3 px-10 gap-3">
+            <div className="hidden lg:flex items-center justify-start p-3 px-10 gap-3">
                 {BOTTOM_NAV_LINKS.map(
                     (link: BottomNavigationLink) => (
                         <Link key={link.name} href={link.href}>
@@ -32,7 +39,7 @@ export default function BottomNavigation({
                 <CreatePostButton />
                 <AdminButton role={payload?.user?.role} />
             </div>
-            <div className="sm:hidden flex items-center justify-start gap-3 ">
+            <div className="lg:hidden flex items-center justify-start gap-3 ">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
@@ -43,7 +50,7 @@ export default function BottomNavigation({
                             <ChevronsUp size={30} />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56 min-h-56 flex flex-col gap-2 bg-transparent border-none px-6">
+                    <DropdownMenuContent className=" flex flex-col gap-2 p-0 border-none mx-6 rounded-xl">
                         {BOTTOM_NAV_LINKS.map(
                             (link: BottomNavigationLink) => (
                                 <Link
@@ -58,6 +65,21 @@ export default function BottomNavigation({
                             )
                         )}
                         <CreatePostButton />
+                        <Button
+                            variant={
+                                viewType !== 'showSearch'
+                                    ? 'secondary'
+                                    : 'default'
+                            }
+                            size={'lg'}
+                            className="h-12 rounded-xl w-full"
+                            onClick={() => dispatch(showSearch())}
+                        >
+                            <Search />
+                            <div className="sm:hidden block">
+                                Search
+                            </div>
+                        </Button>
                         <AdminButton role={payload?.user?.role} />
                     </DropdownMenuContent>
                 </DropdownMenu>

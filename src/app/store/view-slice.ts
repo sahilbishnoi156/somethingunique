@@ -48,6 +48,10 @@ export const viewSlice = createSlice({
             state.postId = null;
         },
         showSearch: (state) => {
+            if (state.viewType === 'showSearch') {
+                state.viewType = 'default';
+                return;
+            }
             state.viewType = 'showSearch';
         },
         setPosts: (state, action: PayloadAction<PostType[]>) => {
