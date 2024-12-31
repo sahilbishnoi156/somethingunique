@@ -342,7 +342,7 @@ export default function Page() {
             default:
                 return (
                     <div className="flex items-center justify-center flex-col w-full h-full">
-                        <h1 className="text-2xl font-bold">
+                        <h1 className="text-2xl font-bold text-center">
                             Welcome to Super Admin Dashboard
                         </h1>
                         <p className="text-muted-foreground">

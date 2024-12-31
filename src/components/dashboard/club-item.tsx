@@ -102,13 +102,24 @@ export function ClubItem({
             </TableCell>
             <TableCell
                 onClick={() => {
-                    if (typeof club.admin === 'string') {
-                        return;
+                    if (club?.actionAuthorized) {
+                        if (typeof club.admin === 'string') {
+                            return;
+                        } else {
+                            router.push(
+                                '/admin/college?tab=students&search=' +
+                                    club.admin.username
+                            );
+                        }
                     } else {
-                        router.push(
-                            '/admin/college?tab=students&search=' +
-                                club.admin.username
-                        );
+                        if (typeof club.admin === 'string') {
+                            return;
+                        } else {
+                            router.push(
+                                '/admin?tab=admins&search=' +
+                                    club.admin.username
+                            );
+                        }
                     }
                 }}
                 className="cursor-pointer"

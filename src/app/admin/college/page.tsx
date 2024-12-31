@@ -21,6 +21,7 @@ import {
     SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { customFetch } from '@/lib/custom-fetch';
+import { parseJwt } from '@/lib/jwt';
 import { CollegeType, UserType } from '@/types/feed.types';
 import { ClipboardList, SquareTerminal, Users } from 'lucide-react';
 import Link from 'next/link';
@@ -64,7 +65,15 @@ export default function Page() {
                     toast.error(error.message);
             }
         };
-        if (!college) fetchCollege();
+        if (!college) {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                const payload = parseJwt(token);
+                if (payload.user.role === 'college_admin') {
+                    fetchCollege();
+                }
+            }
+        }
     }, [college]);
 
     React.useEffect(() => {

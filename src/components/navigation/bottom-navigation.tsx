@@ -39,7 +39,7 @@ export default function BottomNavigation({
                 <CreatePostButton />
                 <AdminButton role={payload?.user?.role} />
             </div>
-            <div className="lg:hidden flex items-center justify-start gap-3 ">
+            <div className="lg:hidden block">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button

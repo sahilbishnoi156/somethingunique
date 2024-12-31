@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { RocketIcon, XCircleIcon } from 'lucide-react';
+import { RocketIcon, X, XCircleIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { resetView, setPosts } from '@/app/store/view-slice';
@@ -31,42 +31,79 @@ export default function CreatePost({
     const handleFileChange = (
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
-        if (e.target.files) {
-            const validFiles = Array.from(e.target.files).map(
-                (file) => {
-                    return {
-                        file,
-                        type: file.type.startsWith('image/')
-                            ? 'image'
-                            : 'video',
-                    };
-                }
-            );
+        if (!e.target.files) return;
 
-            // Check if there are any invalid files
-            const invalidFiles = validFiles.filter(
-                (fileObj) =>
-                    fileObj.type !== 'image' &&
-                    fileObj.type !== 'video'
-            );
+        const validFiles: { file: File; type: 'image' | 'video' }[] =
+            [];
+        let totalSize = 0;
+        let invalidFileFound = false;
+        const maxFileSize = 5 * 1024 * 1024; // 5MB per file
+        const allowedFileTypes = [
+            'image/jpeg',
+            'image/png',
+            'video/mp4',
+            'video/webm',
+        ];
+        const maxTotalSize = 20 * 1024 * 1024; // 20MB total size
 
-            if (invalidFiles.length > 0) {
-                toast.error('Only images and videos are allowed!');
-                return;
+        for (const file of e.target.files) {
+            const type = file.type.startsWith('image/')
+                ? 'image'
+                : 'video';
+
+            // Check if the file type is allowed
+            if (!allowedFileTypes.includes(file.type)) {
+                invalidFileFound = true;
+                break;
             }
 
-            if (validFiles.length > 5) {
-                toast.error("You can't post more than 5 files!");
-                return;
-            } else if (attachments.length + validFiles.length > 5) {
+            // Check if the file size is within the limit
+            if (type === 'image' && file.size > maxFileSize) {
                 toast.error(
-                    'You can only upload a maximum of 5 files per post!'
+                    `${file.name} is too large. Maximum file size
+                     is 5MB.`
+                );
+                return;
+            }
+            if (type === 'video' && file.size > maxFileSize + 25) {
+                toast.error(
+                    `${file.name} is too large. Maximum file size is 30MB.`
                 );
                 return;
             }
 
-            setAttachments((prev) => [...prev, ...validFiles]);
+            validFiles.push({ file, type });
+            totalSize += file.size;
+
+            // Check if the total file size exceeds the limit
+            if (totalSize > maxTotalSize) {
+                toast.error(
+                    'Total file size exceeds the 20MB limit.'
+                );
+                return;
+            }
         }
+
+        if (invalidFileFound) {
+            toast.error(
+                'Only allowed image and video files (JPEG, PNG, MP4, WebM) are accepted!'
+            );
+            return;
+        }
+
+        if (validFiles.length > 5) {
+            toast.error("You can't post more than 5 files!");
+            return;
+        }
+
+        if (attachments.length + validFiles.length > 5) {
+            toast.error(
+                'You can only upload a maximum of 5 files per post!'
+            );
+            return;
+        }
+
+        setAttachments((prev) => [...prev, ...validFiles]);
     };
 
     const { posts } = useSelector((state: RootState) => state.view);
@@ -188,7 +225,7 @@ export default function CreatePost({
             )}
             <div className="flex flex-col gap-4">
                 <div className="text-start">
-                    <h1 className="text-3xl font-bold ">
+                    <h1 className="sm:text-3xl text-2xl font-bold">
                         {renderHeading()}
                     </h1>
                     <p className="text-sm text-gray-500">
@@ -210,33 +247,54 @@ export default function CreatePost({
                     </label>
                 </div>
                 {attachments.length > 0 && (
-                    <div className="overflow-x-auto flex gap-2 mt-4">
-                        {attachments.map((file, index) => (
-                            <div
-                                key={index}
-                                className="flex-shrink-0 w-24 h-24 relative rounded-md"
-                            >
-                                {file.type == 'image' ? (
-                                    <Image
-                                        src={URL.createObjectURL(
-                                            file.file
-                                        )}
-                                        alt="Preview"
-                                        className="w-full h-full object-cover rounded-md"
-                                        layout="fill"
-                                        objectFit="cover"
-                                    />
-                                ) : (
-                                    <video
-                                        src={URL.createObjectURL(
-                                            file.file
-                                        )}
-                                        className="w-full h-full object-cover rounded-md"
-                                        controls
-                                    />
-                                )}
-                            </div>
-                        ))}
+                    <div>
+                        <p className="text-md text-primary font-bold">
+                            <span className="text-sm text-primary/80">
+                                Total files:
+                            </span>{' '}
+                            {attachments.length}
+                        </p>
+                        <div className="overflow-x-auto flex gap-2">
+                            {attachments.map((file, index) => (
+                                <div
+                                    key={index}
+                                    className="flex-shrink-0 w-24 h-24 relative rounded-xl"
+                                >
+                                    <div
+                                        className="absolute rounded-xl inset-0 flex items-center justify-center z-50 bg-black/50 text-white"
+                                        onClick={() => {
+                                            setAttachments((prev) =>
+                                                prev.filter(
+                                                    (item) =>
+                                                        item !== file
+                                                )
+                                            );
+                                        }}
+                                    >
+                                        <X />
+                                    </div>
+                                    {file.type == 'image' ? (
+                                        <Image
+                                            src={URL.createObjectURL(
+                                                file.file
+                                            )}
+                                            alt="Preview"
+                                            className="w-full h-full object-cover rounded-xl"
+                                            layout="fill"
+                                            objectFit="cover"
+                                        />
+                                    ) : (
+                                        <video
+                                            src={URL.createObjectURL(
+                                                file.file
+                                            )}
+                                            className="w-full h-full object-cover rounded-xl"
+                                            controls
+                                        />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
                 <div className="space-y-2">
@@ -252,20 +310,22 @@ export default function CreatePost({
                         onChange={handleFileChange}
                     />
                     <div className="flex items-center gap-2">
-                        <button
-                            type="button"
-                            disabled={isUploading}
-                            onClick={() =>
-                                document
-                                    .getElementById('fileInput')
-                                    ?.click()
-                            }
-                            className="px-4 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                        >
-                            {attachments.length > 0
-                                ? 'Add More'
-                                : 'Choose Files'}
-                        </button>
+                        {attachments.length < 5 && (
+                            <button
+                                type="button"
+                                disabled={isUploading}
+                                onClick={() =>
+                                    document
+                                        .getElementById('fileInput')
+                                        ?.click()
+                                }
+                                className="px-4 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                            >
+                                {attachments.length > 0
+                                    ? 'Add More'
+                                    : 'Choose Files'}
+                            </button>
+                        )}
                         {attachments.length > 0 && (
                             <div>
                                 <Button

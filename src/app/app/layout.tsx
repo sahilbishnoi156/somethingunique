@@ -46,7 +46,7 @@ export default function RootLayout({
                     <Suspense>{children}</Suspense>
                 </div>
                 <div
-                    className={`h-[8%] absolute lg:relative ${
+                    className={`h-[8%] fixed lg:relative ${
                         viewType !== 'default'
                             ? 'lg:left-4 right-4'
                             : 'right-4'
@@ -60,9 +60,9 @@ export default function RootLayout({
             <div
                 className={`${
                     viewType !== 'default'
-                        ? 'absolute top-0 left-0 inset-0'
+                        ? 'fixed top-0 left-0 inset-0'
                         : 'hidden lg:block'
-                } md:relative  md:hover:bg-secondary/20 bg-background duration-150 flex-1 h-[88%] lg:h-full md:rounded-xl overflow-scroll scrollbar-hide`}
+                } md:relative  md:hover:bg-secondary/20 bg-background duration-150 flex-1 h-full md:rounded-xl overflow-scroll scrollbar-hide`}
             >
                 <SideBar />
             </div>

@@ -58,7 +58,7 @@ const UserSearch = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold text-center mb-6">
+            <h1 className="text-2xl font-bold text-start mb-6">
                 👀 Find your people, or at least someone interesting!
             </h1>
             <div
