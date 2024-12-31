@@ -166,14 +166,14 @@ export default function ProfilePage() {
                     <div className="w-full h-[250px] relative">
                         <Image
                             alt="Profile Background"
-                            src="https://pixabay.com/get/g888fe05a33b1859965d74b04be7ecdf1cf0bcd46649b930edda77649842e5f1584bd4c80c04d2157008bdbbac75668fb.jpg"
+                            src={'/darkBackground.jpg'}
                             className="w-full h-full -z-10"
                             layout="fill"
                             objectFit="cover"
                         />
                         <Image
                             alt="Profile Background"
-                            src="https://pixabay.com/get/gfef4be2bd6c0145aa163dd9d4b961c4ceffabe5ea73aed3629788e6e2876d4dea9a3ca01f1d17aff7108ae390472be16.jpg"
+                            src={'/lightBackground.jpg'}
                             className="w-full dark:hidden h-full -z-10"
                             layout="fill"
                             objectFit="cover"

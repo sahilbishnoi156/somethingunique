@@ -254,10 +254,13 @@ export default function Page() {
                 return (
                     <div className="flex items-center justify-center flex-col w-full h-full">
                         <h1 className="text-2xl font-bold">
-                            Welcome to College Admin Dashboard
+                            Welcome to{' '}
+                            {college?.name.split(',')[0] + "'s " ||
+                                'College'}
+                            Admin Dashboard
                         </h1>
                         <p className="text-muted-foreground">
-                            Select a section from the sidebar
+                            explore the option from left to procced
                         </p>
                     </div>
                 );
@@ -307,7 +310,9 @@ export default function Page() {
                             <BreadcrumbList>
                                 <BreadcrumbItem className="hidden md:block">
                                     <Link href="/admin/college">
-                                        {college?.name ||
+                                        {college?.name.split(
+                                            ','
+                                        )[0] ||
                                             'College Admin Dashboard'}
                                     </Link>
                                 </BreadcrumbItem>
