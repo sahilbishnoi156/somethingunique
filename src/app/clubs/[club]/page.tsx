@@ -127,9 +127,9 @@ export default function Club() {
                         className="bg-primary/10 hover:bg-primary/20"
                     />
                     <Link href={'/app/feed'}>
-                        {url === 'somethingunique'
+                        {url === 'somethingunique.vercel.app'
                             ? 'Something Unique'
-                            : url === 'collegepoint'
+                            : url === 'collegepoint.vercel.app'
                             ? 'College Point'
                             : 'Localhost'}
                     </Link>

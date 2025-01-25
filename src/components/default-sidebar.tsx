@@ -57,9 +57,9 @@ export default function DefaultSidebar() {
     return (
         <div className="md:p-6 p-3">
             <Link href={'/app/feed'} className="text-2xl ">
-                {url === 'somethingunique'
+                {url === 'somethingunique.vercel.app'
                     ? 'Something Unique'
-                    : url === 'collegepoint'
+                    : url === 'collegepoint.vercel.app'
                     ? 'College Point'
                     : 'Localhost'}
             </Link>

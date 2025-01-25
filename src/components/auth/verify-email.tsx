@@ -164,9 +164,9 @@ export default function StudentEmailVerification({
             )}
             <div className="absolute top-5 left-5 text-xl z-50 flex items-center justify-center gap-4">
                 <Link href="/">
-                    {url === 'somethingunique'
+                    {url === 'somethingunique.vercel.app'
                         ? 'Something Unique'
-                        : url === 'collegepoint'
+                        : url === 'collegepoint.vercel.app'
                         ? 'College Point'
                         : 'Localhost'}
                 </Link>
