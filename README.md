@@ -1,4 +1,4 @@
-# Something Unique
+# College Point
 
 A dedicated platform for college students to interact, share, and collaborate within their universities. Built with a focus on anonymity, modern design, and engaging user experiences.
 
@@ -113,7 +113,7 @@ A dedicated platform for college students to interact, share, and collaborate wi
          node ./index.js
        ```
 4. Frontend Scripts:
-   1. Start in development mode : 
+   1. Start in development mode :
       ```bash
         npm run dev
       ```
@@ -127,14 +127,14 @@ A dedicated platform for college students to interact, share, and collaborate wi
        ```
 6. Visit http://localhost:3000 in your browser.
 
-## Folder Structure 
+## Folder Structure
 ```
-SomethingUnique/
-├── frontend/             
+CollegePoint/
+├── frontend/
 │   ├── public/           # Static assets like images and public files
 │   └── src/
 │       ├── components/   # Reusable UI components
-│       ├── constants/    # Reusable constant variables 
+│       ├── constants/    # Reusable constant variables
 │       ├── app/          # Next.js route structure
 │       │   ├── app/      # Main app where posts will be shown
 │       │   ├── login/    # User login and authentication
@@ -144,7 +144,7 @@ SomethingUnique/
 │       │   ├── lib/      # Helper functions and utilities
 │       └── types/        # Type for arguments and variables (For TypeScript)
 │
-├── backend/              
+├── backend/
     ├── middleware/       # Middleware for request validation and authentication
     ├── models/           # Database models (e.g., User, Post)
     ├── routes/           # API routes for authentication, posts, comments, etc.

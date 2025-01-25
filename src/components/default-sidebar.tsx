@@ -28,6 +28,14 @@ export default function DefaultSidebar() {
     }, []);
     const [clubs, setClubs] = React.useState<ClubType[]>([]);
 
+    const [url, setUrl] = React.useState('');
+
+    React.useEffect(() => {
+        if (window) {
+            setUrl(window.location.hostname);
+        }
+    }, []);
+
     React.useEffect(() => {
         const fetchClubs = async () => {
             try {
@@ -49,7 +57,11 @@ export default function DefaultSidebar() {
     return (
         <div className="md:p-6 p-3">
             <Link href={'/app/feed'} className="text-2xl ">
-                Something Unique
+                {url === 'somethingunique'
+                    ? 'Something Unique'
+                    : url === 'collegepoint'
+                    ? 'College Point'
+                    : 'Localhost'}
             </Link>
             <div className="space-y-3 flex flex-col mt-2">
                 <div

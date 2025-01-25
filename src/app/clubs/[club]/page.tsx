@@ -51,6 +51,12 @@ export default function Club() {
         payload?.user?.id === (currClub?.admin as UserType)?._id;
 
     const [invalidClub, setInvalidClub] = React.useState(false);
+    const [url, setUrl] = React.useState('');
+    React.useEffect(() => {
+        if (window) {
+            setUrl(window.location.hostname);
+        }
+    }, []);
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -94,6 +100,7 @@ export default function Club() {
             </div>
         );
     }
+
     if (invalidClub) {
         return (
             <div className="text-center p-8 ">
@@ -119,7 +126,13 @@ export default function Club() {
                         variant={'ghost'}
                         className="bg-primary/10 hover:bg-primary/20"
                     />
-                    <Link href={'/app/feed'}>Something Unique</Link>
+                    <Link href={'/app/feed'}>
+                        {url === 'somethingunique'
+                            ? 'Something Unique'
+                            : url === 'collegepoint'
+                            ? 'College Point'
+                            : 'Localhost'}
+                    </Link>
                 </div>
                 <div className="space-y-4 border p-4 rounded-xl bg-secondary/80">
                     <div>

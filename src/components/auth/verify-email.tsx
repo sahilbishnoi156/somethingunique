@@ -30,7 +30,15 @@ export default function StudentEmailVerification({
     const [otpSent, setOtpSent] = useState(false);
     const [otp, setOtp] = useState<string>('');
     const pathname = usePathname();
+
     const [isProcessing, setIsProcessing] = useState(false);
+    const [url, setUrl] = useState('');
+
+    React.useEffect(() => {
+        if (window) {
+            setUrl(window.location.hostname);
+        }
+    }, []);
 
     const handleSendOtp = () => {
         setIsProcessing(true);
@@ -155,7 +163,13 @@ export default function StudentEmailVerification({
                 </>
             )}
             <div className="absolute top-5 left-5 text-xl z-50 flex items-center justify-center gap-4">
-                <Link href="/">Something Unique</Link>
+                <Link href="/">
+                    {url === 'somethingunique'
+                        ? 'Something Unique'
+                        : url === 'collegepoint'
+                        ? 'College Point'
+                        : 'Localhost'}
+                </Link>
                 <span className="bg-secondary w-[2px] h-8 rounded-full"></span>
                 <span className="capitalize text-neutral-500">
                     {pathname.split('/')[1]}
