@@ -1,4 +1,4 @@
-# Something Unique
+# College Point
 
 A dedicated platform for college students to interact, share, and collaborate within their universities. Built with a focus on anonymity, modern design, and engaging user experiences.
 
