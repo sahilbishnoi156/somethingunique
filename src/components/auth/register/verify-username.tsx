@@ -111,8 +111,8 @@ export default function CreateUsername({
 
             if (!response.ok) {
                 throw new Error(
-                    data?.data ||
-                        data?.message ||
+                    data?.message ||
+                        data?.data.data ||
                         'Houston, we have a problem!'
                 );
             }
@@ -155,8 +155,8 @@ export default function CreateUsername({
 
             if (!response.ok) {
                 throw new Error(
-                    data?.data ||
-                        data?.message ||
+                    data?.message ||
+                        data?.data?.data ||
                         'Houston, we have a problem!'
                 );
             }
@@ -191,9 +191,9 @@ export default function CreateUsername({
             );
             const data = await response.json();
             if (!response.ok) {
-                throw new Error(data?.data || data?.message);
+                throw new Error(data?.message || data?.data?.message);
             }
-            return data.data;
+            return data.data.data;
         } catch (error) {
             console.error('API error:', error);
             return false;

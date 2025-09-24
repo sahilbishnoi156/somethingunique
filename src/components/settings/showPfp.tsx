@@ -80,8 +80,8 @@ export default function ShowProfilePicture({
             const data = await response.json();
             if (!response.ok) {
                 throw new Error(
-                    data?.data ||
-                        data?.message ||
+                    data?.message ||
+                        data?.data?.data ||
                         'Failed to update profile picture'
                 );
             } else {

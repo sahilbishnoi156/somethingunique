@@ -51,12 +51,12 @@ export default function Page() {
                 );
                 const data = await response.json();
                 if (!response.ok) {
-                    throw new Error(data?.data || data?.message);
+                    throw new Error(data?.message || data?.data?.message);
                 }
-                setCollege(data.data);
+                setCollege(data.data.data);
                 toast.success(
                     'Welcome ' +
-                        data.data.name.split(',')[0] +
+                        data.data.data.name.split(',')[0] +
                         "'s Admin"
                 );
             } catch (error) {
@@ -90,9 +90,9 @@ export default function Page() {
                     const data = await response.json();
                     if (!response.ok) {
                         console.log(data);
-                        throw new Error(data?.data || data?.message);
+                        throw new Error(data?.message || data?.data?.message);
                     }
-                    setData(data.data);
+                    setData(data.data.data);
                     setIsDataFetching(false);
                 } catch (error) {
                     console.error(error);

@@ -243,8 +243,8 @@ export default function PostItem({
             }
 
             // Update counts from server (optional if optimistic counts match backend)
-            setUpvotesCount(data.data.upvotesCount);
-            setDownvotesCount(data.data.downvotesCount);
+            setUpvotesCount(data.data.data.upvotesCount);
+            setDownvotesCount(data.data.data.downvotesCount);
         } catch (error) {
             console.error('Vote submission failed:', error);
 

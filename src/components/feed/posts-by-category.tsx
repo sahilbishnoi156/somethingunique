@@ -55,7 +55,7 @@ export default function PostByCategory({
                     );
                 }
                 const { data: fetchedPosts } = await response.json();
-                const newPosts = fetchedPosts.reverse();
+                const newPosts = fetchedPosts.data.reverse();
                 dispatch(setPosts(newPosts));
             } catch (error) {
                 if (error instanceof Error) {

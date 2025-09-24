@@ -26,14 +26,17 @@ export default function Register() {
     }, []);
 
     if (dummyAuthToken) {
+        console.log(dummyAuthToken)
         if (isJwtExpired(dummyAuthToken)) {
+            console.log('JWT expired')
             window?.localStorage.removeItem('dummyAuthToken');
-            redirect('/app');
+            // redirect('/app');
         } else {
             const payload = parseJwt(dummyAuthToken);
+            console.log(payload)
             if (!payload?.user?.email) {
                 window?.localStorage.removeItem('dummyAuthToken');
-                redirect('/app');
+                // redirect('/app');
             } else {
                 return (
                     <div className="h-screen w-screen">

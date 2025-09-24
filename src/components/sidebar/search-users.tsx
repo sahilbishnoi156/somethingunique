@@ -30,7 +30,7 @@ const UserSearch = () => {
                 throw new Error(errorMessage);
             }
             const data = await response.json();
-            setResults(data.data);
+            setResults(data.data.data);
         } catch (error) {
             if (error instanceof Error) setError(error.message);
             console.error('Error fetching users:', error);

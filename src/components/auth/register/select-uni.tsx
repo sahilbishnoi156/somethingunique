@@ -35,8 +35,8 @@ export default function SelectUniversity({
                     { method: 'GET' }
                 );
                 const data = await response.json();
-                if (response?.ok) setUniversities(data.data);
-                else throw new Error(data?.data || data?.message);
+                if (response?.ok) setUniversities(data.data.data);
+                else throw new Error(data?.message || data?.data?.message);
             } catch (error) {
                 console.error(error);
             }

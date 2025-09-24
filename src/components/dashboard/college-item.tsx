@@ -31,7 +31,7 @@ export function CollegeItem({
             );
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(data?.data || data?.message);
+                throw new Error(data?.message || data?.data?.message);
             }
             setRefetch((prev) => !prev);
         } catch (error) {

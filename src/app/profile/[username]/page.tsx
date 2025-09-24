@@ -63,14 +63,14 @@ export default function ProfilePage() {
                         return;
                     }
                     throw new Error(
-                        data?.data ||
-                            data?.message ||
+                        data?.message ||
+                            data?.data.data ||
                             'Error fetching data'
                     );
                 }
                 setProfile({
-                    user: data.data.user,
-                    posts: data.data.posts,
+                    user: data.data.data.user,
+                    posts: data.data.data.posts,
                     title: getRandomElement(IDENTITIES),
                 });
                 setIsFetching(false);
@@ -105,8 +105,8 @@ export default function ProfilePage() {
                 const data = await response.json();
                 if (!response.ok) {
                     throw new Error(
-                        data?.data ||
-                            data?.message ||
+                        data?.message ||
+                            data?.data?.data ||
                             'Error updating bio'
                     );
                 }

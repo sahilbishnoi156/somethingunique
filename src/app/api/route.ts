@@ -36,6 +36,7 @@ export const POST = async (request: NextRequest) => {
 
         // Parse response
         const contentType = response.headers.get('content-type') || '';
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let responseData: any;
         let displayMessage: string | undefined;
 
@@ -97,6 +98,7 @@ export const POST = async (request: NextRequest) => {
 };
 
 /** Helper for consistent JSON responses */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function jsonResponse(payload: any, status: number) {
     return new Response(JSON.stringify(payload), {
         status,

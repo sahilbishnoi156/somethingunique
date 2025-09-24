@@ -25,10 +25,10 @@ export default function RegisterClub() {
                 );
                 const data = await response.json();
                 if (!response.ok) {
-                    throw new Error(data?.data || data?.message);
+                    throw new Error(data?.message || data?.data?.message);
                 }
-                setCollege(data.data?.college);
-                setClub(data.data?.club);
+                setCollege(data.data.data?.college);
+                setClub(data.data.data?.club);
             } catch (error) {
                 console.error(error);
             } finally {

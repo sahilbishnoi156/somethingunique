@@ -62,7 +62,7 @@ export function CreateClubDialog({
 
             if (!response.ok) {
                 const data = await response.json();
-                throw new Error(data?.data || data?.message);
+                throw new Error(data?.message || data?.data?.message);
             }
             toast.success(
                 "We have received your request. We'll review it and get back to you soon."

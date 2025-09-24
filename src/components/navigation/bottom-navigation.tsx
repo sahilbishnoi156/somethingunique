@@ -26,6 +26,7 @@ export default function BottomNavigation({
     const { viewType } = useSelector(
         (state: RootState) => state.view
     );
+    console.log(payload)
     return (
         <>
             <div className="hidden lg:flex items-center justify-start p-3 px-10 gap-3">

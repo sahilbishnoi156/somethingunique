@@ -175,15 +175,15 @@ export default function CreatePost({
                 const data = await response.json();
                 toast.success('Post created successfully!');
                 dispatch(resetView());
-                dispatch(setPosts([data.data, ...posts]));
+                dispatch(setPosts([data.data.data, ...posts]));
                 if (category === 'event') {
                     window.location.reload();
                 }
             } else {
                 const errorData = await response.json();
                 throw new Error(
-                    errorData?.data ||
-                        errorData?.message ||
+                    errorData?.message ||
+                        errorData?.data?.data ||
                         `Failed to create post!`
                 );
             }

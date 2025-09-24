@@ -96,16 +96,17 @@ export default function StudentEmailVerification({
                         }
                     );
                     const data = await response.json();
+                    console.log(data);
                     if (!response.ok) {
-                        throw new Error(data?.data || data?.message);
+                        throw new Error(data?.message || data?.data?.message);
                     }
                     window?.localStorage.setItem(
                         type === 'register'
                             ? 'dummyAuthToken'
                             : 'authToken',
-                        data.data.authToken
+                        data.data.data.authToken
                     );
-                    resolve(data.data.authToken);
+                    resolve(data.data.data.authToken);
                     setTimeout(() => {
                         window.location.href = '/app';
                     }, 500);

@@ -21,7 +21,7 @@ export default function AccountSetting() {
                 if (!response.ok) {
                     throw new Error(data?.data.message);
                 }
-                setUser(data.data);
+                setUser(data.data.data);
                 setIsFetching(false);
             } catch (error) {
                 console.error(error);

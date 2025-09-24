@@ -39,8 +39,8 @@ export default function AccountSetting() {
 
             const data = await response.json();
             throw new Error(
-                data?.data ||
-                    data?.message ||
+                data?.message ||
+                    data?.data?.data ||
                     'Failed to delete account'
             );
         } catch (error) {

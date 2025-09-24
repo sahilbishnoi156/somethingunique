@@ -69,14 +69,14 @@ export default function Club() {
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(
-                        errorData?.data ||
-                            errorData?.message ||
+                        errorData?.message ||
+                            errorData?.data ||
                             'Failed to fetch posts'
                     );
                 }
-                const { data } = await response.json();
-                setCurrClub(data?.club);
-                const newPosts = data?.posts.reverse();
+                const {data} = await response.json();
+                setCurrClub(data?.data?.club);
+                const newPosts = data?.data?.posts?.reverse() || [];
                 setPosts(newPosts);
             } catch (error) {
                 if (error instanceof Error) {
@@ -240,15 +240,7 @@ export default function Club() {
                 )}
             </div>
 
-            {!isEventPost && (
-                <div
-                    className={`hidden lg:block md:hover:bg-secondary/20 bg-background duration-150 flex-1 h-full md:rounded-xl overflow-scroll scrollbar-hide`}
-                >
-                    <CreatePost o_category="event" />
-                </div>
-            )}
-
-            {isClubAdmin && isEventPost && (
+            {isClubAdmin && (
                 <div
                     className={`fixed top-0 left-0 inset-0 lg:relative lg:hover:bg-secondary/20 bg-background duration-150 flex-1 h-full lg:rounded-xl overflow-scroll scrollbar-hide`}
                 >

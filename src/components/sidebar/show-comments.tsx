@@ -63,14 +63,14 @@ const Comments = ({ postId }: { postId: string | null }) => {
                 const data = await response.json();
                 if (!response.ok) {
                     throw new Error(
-                        data?.data ||
-                            data?.message ||
+                        data?.message ||
+                            data?.data?.data ||
                             'Failed to fetch comments'
                     );
                 }
-                setComments(data.data.comments);
-                setCurrUser(data.data.user);
-                setCurrPost(data.data.post);
+                setComments(data.data.data.comments);
+                setCurrUser(data.data.data.user);
+                setCurrPost(data.data.data.post);
             } catch (error) {
                 console.error('Error fetching comments:', error);
                 toast.error(
@@ -96,12 +96,12 @@ const Comments = ({ postId }: { postId: string | null }) => {
             });
             const data = await response.json();
             if (response.ok) {
-                setComments((prev) => [data.data, ...prev]);
+                setComments((prev) => [data.data.data, ...prev]);
                 setNewComment('');
             } else {
                 throw new Error(
-                    data?.data ||
-                        data?.message ||
+                    data?.message ||
+                            data?.data?.data ||
                         'Failed to add comment'
                 );
             }
@@ -172,8 +172,8 @@ const Comments = ({ postId }: { postId: string | null }) => {
                 } else {
                     const data = await response.json();
                     throw new Error(
-                        data?.data ||
-                            data?.message ||
+                        data?.message ||
+                            data?.data?.data ||
                             'Failed to delete comment'
                     );
                 }
