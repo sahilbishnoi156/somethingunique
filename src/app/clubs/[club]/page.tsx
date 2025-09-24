@@ -32,10 +32,6 @@ export default function Club() {
     const [posts, setPosts] = React.useState<PostType[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
 
-    const { isEventPost } = useSelector(
-        (state: RootState) => state.view
-    );
-
     const [payload, setPayload] = React.useState<JwtPayload>();
     React.useEffect(() => {
         const token = window?.localStorage.getItem('authToken');
