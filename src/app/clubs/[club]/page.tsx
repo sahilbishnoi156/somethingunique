@@ -1,5 +1,4 @@
 'use client';
-import { RootState } from '@/app/store/store';
 import { toggleEventPostBar } from '@/app/store/view-slice';
 import BackButton from '@/components/back-button';
 import CreatePost from '@/components/feed/create-post';
@@ -23,7 +22,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { redirect, useParams } from 'next/navigation';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { toast } from 'sonner';
 
 export default function Club() {
