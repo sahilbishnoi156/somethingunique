@@ -56,7 +56,7 @@ export default function StudentEmailVerification({
                     );
                     const data = await response.json();
                     if (!response.ok) {
-                        throw new Error(data?.data || data?.message);
+                        throw new Error(data?.message || data?.data);
                     }
                     setOtpSent(true);
                     resolve('true');
