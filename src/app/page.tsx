@@ -12,7 +12,7 @@ import React from 'react';
 const LandingPage = () => {
     const HEADING = getRandomElement(LANDING_PAGE_HEADING);
     const DESCRIPTION = getRandomElement(LANDING_PAGE_DESCRIPTION);
-    const token = localStorage.getItem('authToken');
+    const token = (typeof localStorage !== "undefined") ? localStorage.getItem('authToken') : null;
 
     return (
         <div className="h-screen w-screen flex flex-col justify-between items-center p-6">

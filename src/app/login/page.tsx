@@ -7,7 +7,7 @@ export default function Register() {
     const [email, setEmail] = React.useState<string>('');
 
     // check if user is already authenticated
-    const authToken = localStorage.getItem('authToken');
+    const authToken = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     if (authToken) {
         redirect('/app');
     }

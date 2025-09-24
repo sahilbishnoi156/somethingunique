@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
             'cdn.pixabay.com',
             'localhost',
             'res.cloudinary.com',
+            'somethinguniquebackend.onrender.com',
+            'somethingunique-backend.onrender.com'
         ],
     },
 };

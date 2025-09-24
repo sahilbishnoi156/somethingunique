@@ -62,7 +62,11 @@ export default function StudentEmailVerification({
         toast.promise(promise, {
             loading: 'Sending OTP...',
             success: 'OTP sent successfully',
-            error: (error) => `Error: ${error.message}`,
+            error: (error) => {
+                // make the error message more user friendly
+                if(error instanceof Error) return `Error: ${error.message}`
+                return `Error: ${error}`
+            },
         });
     };
 
