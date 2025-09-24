@@ -12,17 +12,25 @@ export const customFetch = async (
     url: string,
     options: FetchOptions
 ) => {
-    const response = await fetch(BASE_URL + url, {
-        method: options.method,
+    const response = await fetch('/api', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            ...options.headers,
-            Authorization: `Bearer ${localStorage.getItem(
-                'authToken'
-            )}`,
         },
-        signal: options.signal,
-        body: options.body,
+        body: JSON.stringify({
+            url: `${BASE_URL}${url}`,
+            options: {
+                method: options.method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...options.headers,
+                    Authorization: `Bearer ${localStorage.getItem(
+                        'authToken'
+                    )}`,
+                },
+                body: options.body,
+            },
+        }),
     });
     if (response.status === 419) {
         setTimeout(() => {

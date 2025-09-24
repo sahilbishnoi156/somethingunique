@@ -7,15 +7,18 @@ import { customFetch } from '@/lib/custom-fetch';
 import { toast } from 'sonner';
 
 export default function AccountSetting() {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        redirect('/login');
-    }
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        if (!token) {
+            redirect('/register');
+        } else {
+            const data = parseJwt(token);
+            setEmail(data.user.email || '');
+        }
+    }, []);
 
     const router = useRouter();
-    const [email, setEmail] = React.useState(
-        parseJwt(token).user.email || ''
-    );
+    const [email, setEmail] = React.useState('');
     const [deleteAccountConfirmed, setDeleteAccountConfirmed] =
         React.useState(false);
 
@@ -29,7 +32,7 @@ export default function AccountSetting() {
                 method: 'DELETE',
             });
             if (response.ok) {
-                localStorage.removeItem('authToken');
+                window?.localStorage.removeItem('authToken');
                 toast.success('Bye bye! We will miss you.');
                 router.push('/login');
             }

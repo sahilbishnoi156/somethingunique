@@ -7,10 +7,12 @@ export default function Register() {
     const [email, setEmail] = React.useState<string>('');
 
     // check if user is already authenticated
-    const authToken = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
-    if (authToken) {
-        redirect('/app');
-    }
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        if (token) {
+            redirect('/app');
+        }
+    }, []);
 
     return (
         <div className="flex items-center justify-center w-screen h-screen">

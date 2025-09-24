@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import {
     Tooltip,
@@ -16,6 +17,7 @@ export const CreatePostButton = () => {
         (state: RootState) => state.view
     );
     const dispatch = useDispatch();
+
     return (
         <TooltipProvider delayDuration={200}>
             <Tooltip>

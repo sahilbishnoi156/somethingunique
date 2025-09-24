@@ -3,12 +3,15 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
     /* config options here */
     images: {
-        domains: [
-            'cdn.pixabay.com',
-            'localhost',
-            'res.cloudinary.com',
-            'somethinguniquebackend.onrender.com',
-            'somethingunique-backend.onrender.com'
+        remotePatterns: [
+            { protocol: 'https', hostname: 'cdn.pixabay.com' },
+            { protocol: 'https', hostname: 'pixabay.com' },
+            { protocol: 'http', hostname: 'localhost' },
+            {
+                protocol: 'https',
+                hostname: 'somethingunique-backend.onrender.com',
+            }, // while using render backend
+            { protocol: 'http', hostname: 'res.cloudinary.com' },
         ],
     },
 };

@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import debounce from 'lodash/debounce';
-import { Loader } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { UserType } from '@/types/feed.types';
 import { customFetch } from '@/lib/custom-fetch';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -54,37 +54,44 @@ const UserSearch = () => {
         debouncedFetch(value);
     };
 
+    const InputRef = React.useRef<HTMLInputElement>(null);
+
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold text-center mb-6">
+            <h1 className="text-2xl font-bold text-start mb-6">
                 👀 Find your people, or at least someone interesting!
             </h1>
+            <div
+                className="text-lg bg-secondary p-3 rounded-lg flex items-center gap-3 cursor-pointer hover:bg-secondary/80"
+                onClick={() => {
+                    if (InputRef) {
+                        InputRef.current?.focus();
+                    }
+                }}
+            >
+                {loading ? (
+                    <div
+                        className="animate-spin inline-block size-5 border-[3px] border-current border-t-transparent dark:text-white rounded-full text-black"
+                        role="status"
+                        aria-label="loading"
+                    >
+                        <span className="sr-only">Loading...</span>
+                    </div>
+                ) : (
+                    <Search className="h-6 w-6 text-gray-500 dark:text-neutral-400" />
+                )}
 
-            <div className="relative mt-4">
                 <input
                     type="text"
                     id="user-search-input"
-                    className="peer p-4 block w-full border-gray-200 rounded-lg text-sm placeholder:text-transparent focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:focus:ring-neutral-600"
+                    className="peer p-0 w-full bg-transparent dark:bg-transparent dark:border-none dark:text-neutral-400 placeholder:text-neutral-400 focus:ring-0 focus:outline-none"
                     placeholder="Type a username..."
                     value={query}
+                    ref={InputRef}
                     onChange={handleInputChange}
                 />
-                <label
-                    htmlFor="user-search-input"
-                    className="absolute top-0 left-0 p-4 h-full text-sm truncate pointer-events-none transition ease-in-out duration-100 border border-transparent origin-[0_0] dark:text-white peer-focus:scale-90 peer-focus:translate-x-0.5 peer-focus:-translate-y-1.5 peer-focus:text-gray-500 dark:peer-focus:text-neutral-500"
-                >
-                    Username
-                </label>
             </div>
 
-            {loading && (
-                <div className="mt-4 text-center">
-                    <Loader />
-                    <p className="text-gray-500 mt-2">
-                        Searching... Hang tight!
-                    </p>
-                </div>
-            )}
             {error && (
                 <div className="mt-4 text-center text-red-500">
                     <p>Error: {error}</p>

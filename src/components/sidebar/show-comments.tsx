@@ -4,7 +4,7 @@ import { resetView } from '@/app/store/view-slice';
 import { customFetch } from '@/lib/custom-fetch';
 import { parseJwt } from '@/lib/jwt';
 import { CommentType, PostType, UserType } from '@/types/feed.types';
-import { Trash2 } from 'lucide-react';
+import { MessageCircle, Trash2 } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
@@ -25,6 +25,8 @@ import {
 } from '@/components/ui/avatar';
 import moment from 'moment';
 import Link from 'next/link';
+import { JwtPayload } from '@/types/auth.types';
+import Loader from '../loader';
 
 const Comments = ({ postId }: { postId: string | null }) => {
     const dispatch = useDispatch();
@@ -32,12 +34,18 @@ const Comments = ({ postId }: { postId: string | null }) => {
     const [newComment, setNewComment] = useState('');
     const [currPost, setCurrPost] = useState<PostType>();
     const [currUser, setCurrUser] = useState<UserType>();
+    const [fetchingDetails, setFetchingDetails] = useState(false);
 
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        redirect('/login');
-    }
-    const user = parseJwt(token).user;
+    const [payload, setPayload] = React.useState<JwtPayload>();
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        if (!token) {
+            redirect('/register');
+        } else {
+            const data = parseJwt(token);
+            setPayload(data);
+        }
+    }, []);
 
     useEffect(() => {
         if (!postId) {
@@ -47,6 +55,7 @@ const Comments = ({ postId }: { postId: string | null }) => {
 
         const fetchComments = async () => {
             try {
+                setFetchingDetails(true);
                 const response = await customFetch(
                     `/comments/get-comments-for-post?postId=${postId}`,
                     { method: 'GET' }
@@ -68,6 +77,8 @@ const Comments = ({ postId }: { postId: string | null }) => {
                     (error as Error).message ||
                         'Failed to fetch comments'
                 );
+            } finally {
+                setFetchingDetails(false);
             }
         };
 
@@ -179,105 +190,135 @@ const Comments = ({ postId }: { postId: string | null }) => {
 
     const renderComments = useCallback(
         (comments: CommentType[]) => {
+            if (comments.length === 0) {
+                return (
+                    <div className="flex items-center justify-center h-full w-full">
+                        <p>No comments yet!</p>
+                    </div>
+                );
+            }
             return comments.map((comment) => (
-                <Card key={comment._id} className="mb-4">
+                <Card key={comment._id} className="mb-4 p-0">
                     <Link
                         href={
                             '/profile/' + comment?.user_id?.username
                         }
                     >
-                        <CardHeader className="flex flex-row items-center gap-3 p-3">
-                            <Avatar>
-                                <AvatarImage
-                                    src={
-                                        comment.user_id.avatar ||
-                                        `/placeholder.svg?height=40&width=40`
-                                    }
-                                    className="object-cover rounded-full"
-                                    alt={comment.user_id.username}
-                                />
-                                <AvatarFallback>
-                                    {comment.user_id.username
-                                        .slice(0, 2)
-                                        .toUpperCase()}
-                                </AvatarFallback>
-                            </Avatar>
-                            <div className="flex flex-col">
-                                <CardTitle className="font-medium">
-                                    {comment.user_id.username}
-                                </CardTitle>
-                                <div>
-                                    <p className="text-xs text-gray-500 ">
-                                        {moment(
-                                            comment.createdAt
-                                        ).fromNow()}
-                                    </p>
+                        <CardHeader className="flex flex-row items-center justify-between p-2">
+                            <div className="flex flex-row items-center justify-between gap-3">
+                                <Avatar>
+                                    <AvatarImage
+                                        src={
+                                            comment.user_id.avatar ||
+                                            `/placeholder.svg?height=40&width=40`
+                                        }
+                                        className="object-cover rounded-full"
+                                        alt={comment.user_id.username}
+                                    />
+                                    <AvatarFallback>
+                                        {comment.user_id.username
+                                            .slice(0, 2)
+                                            .toUpperCase()}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <div className="flex flex-col">
+                                    <CardTitle className="font-medium">
+                                        {comment.user_id.username}
+                                    </CardTitle>
+                                    <div>
+                                        <p className="text-xs text-gray-500 ">
+                                            {moment(
+                                                comment.createdAt
+                                            ).fromNow()}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
+                            {payload?.user.id ===
+                                comment.user_id._id && (
+                                <CardFooter className="flex justify-end p-3">
+                                    <Button
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() =>
+                                            handleDeleteComment(
+                                                comment._id
+                                            )
+                                        }
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                        Delete
+                                    </Button>
+                                </CardFooter>
+                            )}
                         </CardHeader>
                     </Link>
                     <CardContent className="p-3 pt-0">
                         <span>{comment.content}</span>
                     </CardContent>
-                    {user.id === comment.user_id._id && (
-                        <CardFooter className="flex justify-end p-3">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="hover:bg-red-600 duration-150"
-                                onClick={() =>
-                                    handleDeleteComment(comment._id)
-                                }
-                            >
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Delete
-                            </Button>
-                        </CardFooter>
-                    )}
                 </Card>
             ));
         },
-        [handleDeleteComment, user.id]
+        [handleDeleteComment, payload]
     );
 
     if (!postId) {
         return null;
     }
 
+    if (fetchingDetails) {
+        return (
+            <div className="flex items-center justify-center h-full w-full">
+                <Loader />
+            </div>
+        );
+    }
     return (
-        <div className="space-y-4 p-4 relative h-full">
-            <h3 className="text-2xl font-bold">Yap Yap 🗨️</h3>
-            <CardContent className="p-4 w-full border-b">
-                <div className="flex gap-2 w-full items-center">
-                    <Avatar>
-                        <AvatarImage
-                            src={
-                                currPost?.user_id?.avatar ||
-                                `/placeholder.svg?height=40&width=40`
-                            }
-                            className="object-cover rounded-full"
-                            alt={currPost?.user_id?.username}
-                        />
-                        <AvatarFallback>
-                            {currPost?.user_id?.username
-                                .slice(0, 2)
-                                .toUpperCase()}
-                        </AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <CardTitle className="font-medium">
-                            {currPost?.user_id?.username}
-                        </CardTitle>
-                        <p className="text-xs text-gray-500 ">
-                            {moment(currPost?.createdAt).fromNow()}
-                        </p>
-                    </div>
-                </div>
-                <div className="mt-2 whitespace-pre">
-                    {renderCaption()}
-                </div>
-            </CardContent>
-            <Card className="absolute w-full bottom-0 left-0">
+        <div className="sm:p-4 p-2 pb-10 relative h-full flex flex-col items-center justify-between w-full">
+            <div className="w-full mt-2">
+                <h3 className="text-2xl font-bold flex items-center gap-2 w-full">
+                    <MessageCircle />
+                    Yap Yap
+                </h3>
+                <Card className="border-none shadow-none w-full">
+                    <CardContent className="p-4 w-full border-b">
+                        <div className="flex gap-2 w-full items-center">
+                            <Avatar>
+                                <AvatarImage
+                                    src={
+                                        currPost?.user_id?.avatar ||
+                                        `/placeholder.svg?height=40&width=40`
+                                    }
+                                    className="object-cover rounded-full"
+                                    alt={currPost?.user_id?.username}
+                                />
+                                <AvatarFallback>
+                                    {currPost?.user_id?.username
+                                        .slice(0, 2)
+                                        .toUpperCase()}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <CardTitle className="font-medium">
+                                    {currPost?.user_id?.username}
+                                </CardTitle>
+                                <p className="text-xs text-gray-500 ">
+                                    {moment(
+                                        currPost?.createdAt
+                                    ).fromNow()}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="mt-2 whitespace-pre">
+                            {renderCaption()}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+            <div className="overflow-y-auto scrollbar-hide py-4 w-full">
+                {renderComments(comments)}
+            </div>
+            <Card className="p-0 w-full">
                 <CardContent className="p-4 flex flex-col justify-center items-end w-full">
                     <div className="flex gap-2 w-full">
                         <Avatar>
@@ -320,7 +361,6 @@ const Comments = ({ postId }: { postId: string | null }) => {
                     </Button>
                 </CardContent>
             </Card>
-            <div>{renderComments(comments)}</div>
         </div>
     );
 };

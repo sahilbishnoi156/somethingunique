@@ -36,7 +36,7 @@ export default function CreateUsername({
     type = 'register',
     oldUsername,
 }: CreateUsernameProps) {
-    const [username, setUsername] = useState(oldUsername || '');
+    const [username, setUsername] = useState<string>('');
     const [status, setStatus] = useState<UsernameStatus>('idle');
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
     const router = useRouter();
@@ -50,6 +50,10 @@ export default function CreateUsername({
         setUsername(input);
         setStatus('idle');
     };
+
+    useEffect(() => {
+        setUsername(oldUsername || '');
+    }, [oldUsername]);
 
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -112,8 +116,11 @@ export default function CreateUsername({
                         'Houston, we have a problem!'
                 );
             }
-            localStorage.setItem('authToken', data?.data?.authToken);
-            localStorage.removeItem('dummyAuthToken');
+            window?.localStorage.setItem(
+                'authToken',
+                data?.data?.authToken
+            );
+            window?.localStorage.removeItem('dummyAuthToken');
 
             toast.success(
                 "Boom! You're in! Time to rock this digital world! 🚀"
@@ -156,7 +163,10 @@ export default function CreateUsername({
             toast.success(
                 'Username updated successfully! Time to show off!'
             );
-            localStorage.setItem('authToken', data?.data?.authToken);
+            window?.localStorage.setItem(
+                'authToken',
+                data?.data?.authToken
+            );
             setTimeout(() => {
                 router.push('/profile');
                 setIsProcessing(false);
@@ -175,9 +185,9 @@ export default function CreateUsername({
         username: string
     ): Promise<boolean> => {
         try {
-            const response = await fetch(
-                BASE_API_URL +
-                    `/auth/check-username-availability?username=${username}`
+            const response = await customFetch(
+                `/auth/check-username-availability?username=${username}`,
+                { method: 'GET' }
             );
             const data = await response.json();
             if (!response.ok) {

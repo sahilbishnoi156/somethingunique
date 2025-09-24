@@ -16,11 +16,13 @@ import {
     useRouter,
     useSearchParams,
 } from 'next/navigation';
+import RegisterClub from '@/components/settings/register-club';
 
 const SETTINGS_COMPONENTS = {
     account: AccountSetting,
     profile: EditProfile,
     themes: Themes,
+    Clubs: RegisterClub,
 };
 
 const tabTypes = Object.keys(SETTINGS_COMPONENTS) as Array<

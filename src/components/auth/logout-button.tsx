@@ -1,12 +1,12 @@
 'use client';
 import React from 'react';
 import { Button } from '../ui/button';
-import { useRouter } from 'next/navigation';
 import { LogOut } from 'lucide-react';
 
 export default function LogoutButton({
     children,
     variant,
+    className,
 }: {
     variant?:
         | 'default'
@@ -18,19 +18,22 @@ export default function LogoutButton({
         | null
         | undefined;
     children?: React.ReactNode;
+    className?: string;
 }) {
-    const router = useRouter();
     return (
         <Button
             variant={variant || 'secondary'}
             onClick={() => {
-                localStorage.removeItem('dummyAuthToken');
-                localStorage.removeItem('authToken');
-                router.refresh();
+                window?.localStorage.removeItem('dummyAuthToken');
+                window?.localStorage.removeItem('authToken');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 500);
             }}
+            className={className}
         >
-            {children}
             <LogOut />
+            {children}
         </Button>
     );
 }

@@ -9,7 +9,7 @@ import { customFetch } from '@/lib/custom-fetch';
 import { parseJwt } from '@/lib/jwt';
 import { getRandomElement } from '@/lib/random-item';
 import { PostType, UserType } from '@/types/feed.types';
-import { Check, ClipboardCheck, Pencil, Send } from 'lucide-react';
+import { Check, ClipboardCheck, Pencil, Send, X } from 'lucide-react';
 import Image from 'next/image';
 import { redirect, useParams } from 'next/navigation';
 import React from 'react';
@@ -18,6 +18,7 @@ import { RootState } from '@/app/store/store';
 import SideBar from '@/components/sidebar/sidebar';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { JwtPayload } from '@/types/auth.types';
 
 export default function ProfilePage() {
     const [profile, setProfile] = React.useState<{
@@ -29,12 +30,18 @@ export default function ProfilePage() {
     const [urlCopied, setUrlCopied] = React.useState(false);
     const [editBio, setEditBio] = React.useState(false);
     const { username } = useParams();
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        redirect('/login');
-    }
-    const user = parseJwt(token).user;
-    const isMyProfile = user.username === username;
+    const [payload, setPayload] = React.useState<JwtPayload>();
+    const [isEditingBio, setIsEditingBio] = React.useState(false);
+    React.useEffect(() => {
+        const token = window?.localStorage.getItem('authToken');
+        if (!token) {
+            redirect('/register');
+        } else {
+            const data = parseJwt(token);
+            setPayload(data);
+        }
+    }, []);
+    const isMyProfile = payload?.user.username === username;
 
     const [userNotFound, setUserNotFound] = React.useState(false);
     React.useEffect(() => {
@@ -61,7 +68,6 @@ export default function ProfilePage() {
                             'Error fetching data'
                     );
                 }
-                console.log(data);
                 setProfile({
                     user: data.data.user,
                     posts: data.data.posts,
@@ -86,6 +92,7 @@ export default function ProfilePage() {
 
     const handleUpdateBio = async () => {
         if (editBio) {
+            setIsEditingBio(true);
             try {
                 const bio = document.querySelector('textarea')?.value;
                 const response = await customFetch(
@@ -113,6 +120,8 @@ export default function ProfilePage() {
                 setEditBio(false);
             } catch (error) {
                 console.error(error);
+            } finally {
+                setIsEditingBio(false);
             }
         } else {
             setEditBio(true);
@@ -157,8 +166,15 @@ export default function ProfilePage() {
                     <div className="w-full h-[250px] relative">
                         <Image
                             alt="Profile Background"
-                            src="https://cdn.pixabay.com/photo/2015/11/04/09/28/banner-1022119_1280.jpg"
-                            className="w-full h-full rounded-tl-lg rounded-tr-lg -z-10"
+                            src={'/darkBackground.jpg'}
+                            className="w-full h-full -z-10"
+                            layout="fill"
+                            objectFit="cover"
+                        />
+                        <Image
+                            alt="Profile Background"
+                            src={'/lightBackground.jpg'}
+                            className="w-full dark:hidden h-full -z-10"
                             layout="fill"
                             objectFit="cover"
                         />
@@ -200,7 +216,7 @@ export default function ProfilePage() {
                                 </svg>
                             </span>
                         </div>
-                        <div className="text-primary-300 sm:w-1/2 p-2 w-full text-center">
+                        <div className="text-primary-300 sm:w-1/2 p-2 w-full text-center whitespace-pre-line">
                             {editBio ? (
                                 <textarea
                                     className="w-full p-2 rounded-lg border border-primary-300 text-primary"
@@ -216,8 +232,8 @@ export default function ProfilePage() {
                             {profile?.title || ''}
                         </p>
                     </div>
-                    <div className="flex-1 flex flex-col items-center lg:items-end justify-end px-8 mt-2">
-                        <div className="flex items-center space-x-4 mt-2">
+                    <div className="flex-1 flex flex-col items-center md:items-end justify-end px-8 mt-2">
+                        <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-4 ">
                             <Button
                                 className="flex items-center"
                                 onClick={() => {
@@ -241,22 +257,6 @@ export default function ProfilePage() {
                             </Button>
                             {isMyProfile && (
                                 <>
-                                    <Button
-                                        className="flex items-center"
-                                        onClick={handleUpdateBio}
-                                    >
-                                        {editBio ? (
-                                            <>
-                                                <Check size={15} />
-                                                <span>Save Bio</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Pencil size={15} />
-                                                <span>Edit Bio</span>
-                                            </>
-                                        )}
-                                    </Button>
                                     <Link
                                         href={'/settings?tab=profile'}
                                     >
@@ -265,6 +265,57 @@ export default function ProfilePage() {
                                             <span>Edit Profile</span>
                                         </Button>
                                     </Link>
+                                    <Button
+                                        className="flex items-center"
+                                        onClick={handleUpdateBio}
+                                    >
+                                        {editBio ? (
+                                            <>
+                                                {isEditingBio ? (
+                                                    <>
+                                                        <div
+                                                            className="animate-spin inline-block size-5 border-[3px] border-current border-t-transparent dark:text-black rounded-full text-white"
+                                                            role="status"
+                                                            aria-label="loading"
+                                                        >
+                                                            <span className="sr-only">
+                                                                Loading...
+                                                            </span>
+                                                        </div>
+                                                        <span>
+                                                            Updating..
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Check
+                                                            size={15}
+                                                        />
+                                                        <span>
+                                                            Save Bio
+                                                        </span>
+                                                    </>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Pencil size={15} />
+                                                <span>Edit Bio</span>
+                                            </>
+                                        )}
+                                    </Button>
+                                    {editBio && (
+                                        <Button
+                                            className="flex items-center"
+                                            variant={'destructive'}
+                                            onClick={() => {
+                                                setEditBio(false);
+                                            }}
+                                        >
+                                            <X />
+                                            Cancel
+                                        </Button>
+                                    )}
                                 </>
                             )}
                         </div>
@@ -275,10 +326,8 @@ export default function ProfilePage() {
                         No posts found
                     </p>
                 ) : (
-                    <div className="flex items-center justify-center flex-col py-10 p-2 border-t">
-                        <h1 className="text-2xl font-bold mb-10">
-                            Posts
-                        </h1>
+                    <div className="flex items-center justify-center flex-col pb-12 sm:py-10 p-2 border-t">
+                        <h1 className="text-2xl font-bold">Posts</h1>
                         <div
                             className={`divide-y ${
                                 viewType === 'showComments'
@@ -290,7 +339,7 @@ export default function ProfilePage() {
                                 <PostItem
                                     key={post._id}
                                     post={post}
-                                    userId={user.id || ''}
+                                    userId={payload?.user.id || ''}
                                 />
                             ))}
                         </div>

@@ -18,6 +18,14 @@ import Link from 'next/link';
 import { Button } from '../ui/button';
 import Loader from '../loader';
 import MainCarousel from '../Carousel';
+import { usePathname } from 'next/navigation';
+import { UserToolTip } from '../show-user-tooltip';
+import {
+    Tooltip,
+    TooltipTrigger,
+    TooltipContent,
+    TooltipProvider,
+} from '../ui/tooltip';
 
 export default function PostItem({
     post,
@@ -258,9 +266,17 @@ export default function PostItem({
 
     const { postId } = useSelector((state: RootState) => state.view);
     const dispatch = useDispatch();
+    const pathname = usePathname();
 
     return (
-        <div className="my-1 hover:bg-secondary/30 duration-300 w-full rounded-xl relative">
+        <div
+            className={`group my-1 dark:hover:bg-secondary/40   ${
+                pathname.includes('profile') ||
+                pathname.includes('clubs')
+                    ? 'hover:bg-primary/10 bg-secondary dark:bg-secondary/20'
+                    : 'hover:bg-secondary'
+            } rounded-lg duration-300 w-full relative`}
+        >
             {isDeleting && (
                 <div className="absolute h-full w-full bg-black/80 flex items-center flex-col gap-5 justify-center z-50">
                     <Loader />
@@ -296,7 +312,7 @@ export default function PostItem({
                                     ? 'bg-gradient-to-b from-green-500 to-green-900'
                                     : userVote === 'downvote'
                                     ? 'bg-gradient-to-b from-red-900 to-red-500'
-                                    : 'bg-secondary/60'
+                                    : 'dark:bg-secondary/60 bg-secondary'
                             }`}
                         >
                             <Smile
@@ -331,7 +347,7 @@ export default function PostItem({
                             <>
                                 <div
                                     className={
-                                        'bg-secondary/30 hover:bg-secondary p-2.5 rounded-full cursor-pointer'
+                                        'dark:bg-secondary/60 bg-secondary hover:bg-primary/10 dark:hover:bg-secondaryy p-2.5 rounded-full cursor-pointer'
                                     }
                                     onClick={() => {
                                         navigator.clipboard.writeText(
@@ -357,7 +373,7 @@ export default function PostItem({
                                     className={`p-2.5 rounded-full cursor-pointer ${
                                         postId === post._id
                                             ? 'bg-primary text-secondary'
-                                            : 'bg-secondary/30 hover:bg-secondary text-primary'
+                                            : 'dark:bg-secondary/60 bg-secondary hover:bg-primary/10 dark:hover:bg-secondary'
                                     }`}
                                     onClick={() =>
                                         dispatch(
@@ -405,20 +421,36 @@ export default function PostItem({
                                     }
                                 />
                             </div>
-                            <Link
-                                href={
-                                    '/profile/' +
-                                    post.user_id.username
-                                }
-                                className=""
-                            >
-                                <div className="text-lg font-semibold">
-                                    {post.user_id.username}
-                                </div>
-                                <div className="text-sm text-gray-500 relative bottom-2">
-                                    {moment(post.createdAt).fromNow()}
-                                </div>
-                            </Link>
+                            <TooltipProvider delayDuration={200}>
+                                <Tooltip>
+                                    <TooltipTrigger>
+                                        <Link
+                                            href={
+                                                '/profile/' +
+                                                post.user_id.username
+                                            }
+                                            className="flex items-start flex-col"
+                                        >
+                                            <div className="text-lg font-semibold">
+                                                {
+                                                    post.user_id
+                                                        .username
+                                                }
+                                            </div>
+                                            <div className="text-sm text-gray-500 relative bottom-2">
+                                                {moment(
+                                                    post.createdAt
+                                                ).fromNow()}
+                                            </div>
+                                        </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <UserToolTip
+                                            user={post.user_id}
+                                        />
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                         </div>
                         <div className="mt-2 dark:text-gray-100 text-neutral-700 whitespace-pre-line">
                             {renderCaption()}
@@ -434,7 +466,7 @@ export default function PostItem({
                                         ? 'sm:bg-gradient-to-b bg-gradient-to-r from-green-500 to-green-900'
                                         : userVote === 'downvote'
                                         ? 'sm:bg-gradient-to-b bg-gradient-to-r from-red-900 to-red-500'
-                                        : 'bg-secondary/60'
+                                        : 'dark:bg-secondary/60 bg-secondary'
                                 }`}
                             >
                                 <Smile
@@ -468,7 +500,7 @@ export default function PostItem({
                             </div>
                             <div
                                 className={
-                                    'bg-secondary/30 hover:bg-secondary p-2 px-3 rounded-full cursor-pointer w-fit flex items-center gap-2'
+                                    'dark:bg-secondary/60 bg-secondary hover:bg-primary/10 dark:hover:bg-secondary p-2 px-3 rounded-full cursor-pointer w-fit flex items-center gap-2'
                                 }
                                 onClick={() => {
                                     navigator.clipboard.writeText(
@@ -498,7 +530,7 @@ export default function PostItem({
                                 className={` w-fit flex items-center gap-2 p-2 px-3 rounded-full cursor-pointer ${
                                     postId === post._id
                                         ? 'bg-primary text-secondary'
-                                        : 'bg-secondary/30 hover:bg-secondary text-primary'
+                                        : 'dark:bg-secondary/60 bg-secondary hover:bg-primary/10 dark:hover:bg-secondary text-primary'
                                 }`}
                                 onClick={() =>
                                     dispatch(showComments(post._id))
@@ -512,7 +544,7 @@ export default function PostItem({
 
                             {isMyPost && (
                                 <div
-                                    className={`p-2 px-3 rounded-full cursor-pointer bg-destructive hover:bg-destructive/60 text-primary w-fit flex items-center gap-2`}
+                                    className={`p-2 px-3 rounded-full cursor-pointer bg-destructive/80 hover:bg-destructive text-white w-fit flex items-center gap-2`}
                                     onClick={() => {
                                         const confirmDelete =
                                             window.confirm(

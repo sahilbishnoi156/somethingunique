@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { validateEmail } from '@/lib/validatate-email';
-import { useRouter } from 'next/navigation';
 import {
     InputOTP,
     InputOTPGroup,
@@ -14,13 +13,13 @@ import {
 import Link from 'next/link';
 import Loader from '../loader';
 import { customFetch } from '@/lib/custom-fetch';
+import { usePathname } from 'next/navigation';
 
 type StudentEmailVerificationProps = {
     email: string;
     type: 'login' | 'register';
     setEmail: React.Dispatch<React.SetStateAction<string>>;
 };
-const BASE_API_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
 export default function StudentEmailVerification({
     email,
     setEmail,
@@ -30,8 +29,16 @@ export default function StudentEmailVerification({
     const [isEmailValid, setIsEmailValid] = useState(false);
     const [otpSent, setOtpSent] = useState(false);
     const [otp, setOtp] = useState<string>('');
-    const router = useRouter();
+    const pathname = usePathname();
+
     const [isProcessing, setIsProcessing] = useState(false);
+    const [url, setUrl] = useState('');
+
+    React.useEffect(() => {
+        if (window) {
+            setUrl(window.location.hostname);
+        }
+    }, []);
 
     const handleSendOtp = () => {
         setIsProcessing(true);
@@ -39,11 +46,13 @@ export default function StudentEmailVerification({
             new Promise(async (resolve, reject) => {
                 // Make the API call
                 try {
-                    const response = await fetch(
-                        BASE_API_URL +
-                            '/auth/send-otp?email=' +
+                    const response = await customFetch(
+                        '/auth/send-otp?email=' +
                             email +
-                            `&type=${type}`
+                            `&type=${type}`,
+                        {
+                            method: 'GET',
+                        }
                     );
                     const data = await response.json();
                     if (!response.ok) {
@@ -90,14 +99,16 @@ export default function StudentEmailVerification({
                     if (!response.ok) {
                         throw new Error(data?.data || data?.message);
                     }
-                    localStorage.setItem(
+                    window?.localStorage.setItem(
                         type === 'register'
                             ? 'dummyAuthToken'
                             : 'authToken',
                         data.data.authToken
                     );
                     resolve(data.data.authToken);
-                    router.refresh();
+                    setTimeout(() => {
+                        window.location.href = '/app';
+                    }, 500);
                 } catch (error) {
                     console.error('API error:', error);
                     reject(error);
@@ -114,7 +125,7 @@ export default function StudentEmailVerification({
     };
 
     return (
-        <div className="w-1/2 mx-auto mt-10">
+        <div className="lg:w-1/2 sm:w-3/4 w-full p-5 mx-auto mt-10">
             {isProcessing && (
                 <div className="w-screen h-screen bg-background fixed inset-0 flex items-center justify-center">
                     <Loader />
@@ -122,7 +133,7 @@ export default function StudentEmailVerification({
             )}
             {otpSent ? (
                 <>
-                    <h2 className="text-3xl font-bold text-center mb-1">
+                    <h2 className="sm:text-3xl text-xl font-bold text-center mb-1">
                         Ready to Prove You Belong? Enter Your OTP to
                         Unlock the College Fun! 🚀
                     </h2>
@@ -133,7 +144,7 @@ export default function StudentEmailVerification({
                 </>
             ) : type === 'register' ? (
                 <>
-                    <h2 className="text-3xl font-bold text-center mb-1">
+                    <h2 className="sm:text-3xl text-xl  font-bold text-center mb-1">
                         Ready to Join the College Fun? Enter Your
                         Campus Email to Get Started! 🚀
                     </h2>
@@ -145,9 +156,9 @@ export default function StudentEmailVerification({
                 </>
             ) : (
                 <>
-                    <h2 className="text-3xl font-bold text-center mb-1">
-                        Lost Your Password Again? 😵‍💫 Time to Unleash
-                        Your Campus Email Magic! 🧙‍♂️
+                    <h2 className="sm:text-3xl text-xl font-bold text-center mb-1">
+                        Email us, or go back to binge-watching
+                        lectures you’ll never remember 🖥️💤.
                     </h2>
                     <p className="text-center text-gray-500 mb-6">
                         We&apos;ll send you a secret code (OTP). No
@@ -155,6 +166,19 @@ export default function StudentEmailVerification({
                     </p>
                 </>
             )}
+            <div className="absolute top-5 left-5 text-xl z-50 flex items-center justify-center gap-4">
+                <Link href="/">
+                    {url === 'somethingunique.vercel.app'
+                        ? 'Something Unique'
+                        : url === 'collegepoint.vercel.app'
+                        ? 'College Point'
+                        : 'Localhost'}
+                </Link>
+                <span className="bg-secondary w-[2px] h-8 rounded-full"></span>
+                <span className="capitalize text-neutral-500">
+                    {pathname.split('/')[1]}
+                </span>
+            </div>
 
             {!otpSent ? (
                 <div>
@@ -182,6 +206,7 @@ export default function StudentEmailVerification({
                         <Button
                             variant={'default'}
                             disabled={!isEmailValid}
+                            className="w-full md:w-fit"
                             onClick={handleSendOtp}
                         >
                             Send Me the Code 🚀
@@ -192,7 +217,6 @@ export default function StudentEmailVerification({
                 <div className="">
                     <div className="flex items-center justify-center mb-6">
                         <InputOTP
-                            size={30}
                             maxLength={6}
                             value={otp}
                             onChange={(value) => {
@@ -200,36 +224,15 @@ export default function StudentEmailVerification({
                             }}
                         >
                             <InputOTPGroup>
-                                <InputOTPSlot
-                                    className="h-12 w-12"
-                                    index={0}
-                                />
-                                <InputOTPSlot
-                                    className="h-12 w-12"
-                                    index={1}
-                                />
+                                <InputOTPSlot index={0} />
+                                <InputOTPSlot index={1} />
+                                <InputOTPSlot index={2} />
                             </InputOTPGroup>
                             <InputOTPSeparator />
                             <InputOTPGroup>
-                                <InputOTPSlot
-                                    className="h-12 w-12"
-                                    index={2}
-                                />
-                                <InputOTPSlot
-                                    className="h-12 w-12"
-                                    index={3}
-                                />
-                            </InputOTPGroup>
-                            <InputOTPSeparator />
-                            <InputOTPGroup>
-                                <InputOTPSlot
-                                    className="h-12 w-12"
-                                    index={4}
-                                />
-                                <InputOTPSlot
-                                    className="h-12 w-12"
-                                    index={5}
-                                />
+                                <InputOTPSlot index={3} />
+                                <InputOTPSlot index={4} />
+                                <InputOTPSlot index={5} />
                             </InputOTPGroup>
                         </InputOTP>
                     </div>
@@ -238,7 +241,7 @@ export default function StudentEmailVerification({
                             variant={'default'}
                             disabled={otp?.length !== 6}
                             onClick={handleVerifyOtp}
-                            className="py-4 px-10"
+                            className="py-4 px-10 w-full sm:w-fit"
                         >
                             Let Me In! 🎉
                         </Button>
@@ -247,21 +250,21 @@ export default function StudentEmailVerification({
             )}
 
             {type === 'login' ? (
-                <p className="text-center text-gray-400 mt-6">
+                <p className="text-center text-primary/80 mt-6">
                     Noting up your sleeves brat? Start from{' '}
                     <Link
                         href="/register"
-                        className="text-blue-400 hover:underline"
+                        className="text-blue-600 hover:underline"
                     >
                         here
                     </Link>{' '}
                 </p>
             ) : (
-                <p className="text-center text-gray-400 mt-6">
+                <p className="text-center text-primary/80 mt-6">
                     Already a member of the secret society?{' '}
                     <Link
                         href="/login"
-                        className="text-blue-400 hover:underline"
+                        className="text-blue-600 hover:underline"
                     >
                         Log in{' '}
                     </Link>

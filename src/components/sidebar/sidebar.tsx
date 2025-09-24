@@ -7,6 +7,7 @@ import { X } from 'lucide-react';
 import DefaultSidebar from '../default-sidebar';
 import Comments from './show-comments';
 import SearchUsers from './search-users';
+import { Button } from '../ui/button';
 
 const SideBar = () => {
     const { viewType, postId } = useSelector(
@@ -17,17 +18,18 @@ const SideBar = () => {
     return (
         <>
             {viewType !== 'default' && (
-                <button
+                <Button
                     style={{
                         position: 'absolute',
-                        top: '20px',
-                        right: '20px',
+                        top: '15px',
+                        right: '15px',
                     }}
+                    size={'icon'}
                     className="z-50"
                     onClick={() => dispatch(resetView())}
                 >
                     <X />
-                </button>
+                </Button>
             )}
             {viewType === 'createPost' && <CreatePost />}
             {viewType === 'showComments' && (

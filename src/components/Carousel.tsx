@@ -80,13 +80,14 @@ export default function MainCarousel({
                     <div
                         key={attachmentIndex}
                         onClick={() => goToSlide(attachmentIndex)}
-                        className="text-2xl cursor-pointer"
+                        className="text-2xl cursor-pointer "
                     >
                         <Dot
-                            color={
+                            size={40}
+                            className={
                                 attachmentIndex === currentIndex
-                                    ? 'green'
-                                    : 'black'
+                                    ? 'text-green-600'
+                                    : 'text-primary'
                             }
                         />
                     </div>

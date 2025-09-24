@@ -25,9 +25,27 @@ export default function ShowProfilePicture({
             ? event.target.files[0]
             : null;
         if (file) {
+            const maxFileSize = 5 * 1024 * 1024; // 5MB limit
+            const allowedFileTypes = ['image/jpeg', 'image/png'];
+
+            // Check if the file type is allowed
+            if (!allowedFileTypes.includes(file.type)) {
+                toast.error('Only JPEG and PNG images are allowed!');
+                return;
+            }
+
+            // Check if the file size is within the limit
+            if (file.size > maxFileSize) {
+                toast.error(
+                    'The file is too large. Maximum size is 5MB.'
+                );
+                return;
+            }
+
             setSelectedImage(file);
         }
     };
+
     const router = useRouter();
 
     const handleImageUpload = async () => {
@@ -98,7 +116,10 @@ export default function ShowProfilePicture({
                 />
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-1 gap-5">
-                <p className="text-gray-600">Got new haircut??</p>
+                <p className="text-gray-600">
+                    Got new haircut?? Wanna show everyone how amazing
+                    you are. Let&apos;s goooo
+                </p>
                 {selectedImage ? (
                     <Button
                         onClick={handleImageUpload}
@@ -122,7 +143,7 @@ export default function ShowProfilePicture({
                             className="cursor-pointer"
                         >
                             <Button
-                                className="py-6"
+                                className="py-6 px-8"
                                 onClick={() => {
                                     fileInputRef.current?.click();
                                 }}

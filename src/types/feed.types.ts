@@ -8,7 +8,7 @@ export type PostType = {
     upvotesCount: number;
     downvotesCount: number;
     userVote: VoteType | null;
-    college_id: CollageType;
+    college_id: CollegeType;
     is_approved: boolean;
     attachments: AttachmentType[];
     createdAt: string;
@@ -25,18 +25,31 @@ export type UserType = {
     username: string;
     email: string;
     bio?: string;
-    college_id: string | CollageType;
+    college_id: string | CollegeType;
     createdAt: string;
     avatar: string;
     posts?: PostType[];
+    role: 'student' | 'college_admin' | 'super_admin';
     title?: string;
 };
 
-export type CollageType = {
+export type CollegeType = {
     _id?: string;
     name: string;
-    key: string;
+    state: string;
+    city: string;
+    country: string;
     createdAt: string;
+};
+export type ClubType = {
+    _id?: string;
+    name: string;
+    description: string;
+    college_id: CollegeType | string;
+    admin: UserType | string;
+    status: 'review' | 'active' | 'inactive';
+    createdAt?: string;
+    actionAuthorized: boolean | null;
 };
 
 export type CommentType = {
