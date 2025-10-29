@@ -20,7 +20,7 @@ import { RootState } from '@/app/store/store';
 export default function BottomNavigation({
     payload,
 }: {
-    payload?: JwtPayload;
+    payload?: JwtPayload | null;
 }) {
     const dispatch = useDispatch();
     const { viewType } = useSelector(

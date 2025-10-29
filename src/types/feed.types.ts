@@ -50,6 +50,7 @@ export type ClubType = {
     status: 'review' | 'active' | 'inactive';
     createdAt?: string;
     actionAuthorized: boolean | null;
+    randomColor?: string;
 };
 
 export type CommentType = {

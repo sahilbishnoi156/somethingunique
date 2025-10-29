@@ -18,13 +18,17 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const [payload, setPayload] = React.useState<JwtPayload>();
+    const [payload, setPayload] = React.useState<JwtPayload | null>(null);
     React.useEffect(() => {
         const token = window?.localStorage.getItem('authToken');
-        if (!token) {
+        if (!token || token === 'undefined') {
             redirect('/register');
         } else {
             const data = parseJwt(token);
+            if(data === null) {
+                window?.localStorage.removeItem('authToken');
+                redirect('/register');
+            }
             setPayload(data);
         }
     }, []);
